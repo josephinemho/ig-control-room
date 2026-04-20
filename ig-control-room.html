@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jojo.thrives — IG Control Room</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #F7F3EE;
+  --warm-white: #FDFAF7;
+  --charcoal: #1C1917;
+  --muted: #78716C;
+  --border: #E7E0D8;
+  --rose: #D4627A;
+  --rose-light: #F5D5DB;
+  --rose-pale: #FDF0F2;
+  --sage: #5C7A6B;
+  --sage-light: #D4E4DC;
+  --amber: #C17B3A;
+  --amber-light: #F5E2CC;
+  --gold: #B8963E;
+  --lavender: #8B7AA8;
+  --lav-light: #E8E3F0;
+  --ink: #2D2926;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--charcoal);
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  background: var(--charcoal);
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rose), var(--lavender));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 600; color: white;
+  font-family: 'Playfair Display', serif;
+}
+.header-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: white;
+  letter-spacing: 0.02em;
+}
+.header-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.header-stats {
+  display: flex;
+  gap: 32px;
+}
+.h-stat { text-align: right; }
+.h-stat-num {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: -0.02em;
+}
+.h-stat-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #4CAF7D;
+  display: inline-block;
+  margin-right: 5px;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* NAV TABS */
+.nav {
+  background: var(--warm-white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  gap: 0;
+}
+.nav-tab {
+  padding: 14px 24px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+.nav-tab:hover { color: var(--charcoal); }
+.nav-tab.active {
+  color: var(--charcoal);
+  border-bottom-color: var(--charcoal);
+}
+
+/* MAIN */
+.main { padding: 32px 40px; max-width: 1400px; }
+
+/* SECTIONS */
+.section { display: none; }
+.section.active { display: block; }
+
+/* OVERVIEW METRICS */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.metric-card {
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.metric-card.rose::before { background: var(--rose); }
+.metric-card.sage::before { background: var(--sage); }
+.metric-card.amber::before { background: var(--amber); }
+.metric-card.lav::before { background: var(--lavender); }
+.metric-card.gold::before { background: var(--gold); }
+.metric-icon {
+  font-size: 18px;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+.metric-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--charcoal);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.metric-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+}
+.metric-delta {
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 6px;
+}
+.delta-up { color: var(--sage); }
+.delta-note { color: var(--muted); }
+
+/* SECTION HEADERS */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--charcoal);
+  font-weight: 400;
+}
+.section-sub {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+/* CALENDAR */
+.calendar-grid {
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: var(--charcoal);
+}
+.cal-day-label {
+  padding: 10px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.cal-month-header {
+  padding: 16px 20px;
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--charcoal);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cal-nav-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.cal-nav-btn:hover { background: var(--cream); color: var(--charcoal); }
+.cal-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+.cal-cell {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  min-height: 90px;
+  padding: 8px;
+  position: relative;
+}
+.cal-cell:nth-child(7n) { border-right: none; }
+.cal-cell.empty { background: #FAFAF9; }
+.cal-cell.today { background: #FFF8F0; }
+.cal-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.cal-cell.today .cal-date {
+  background: var(--rose);
+  color: white;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+}
+.cal-post-chip {
+  background: var(--rose-pale);
+  border: 1px solid var(--rose-light);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 10px;
+  color: var(--rose);
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 2px;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  transition: background 0.15s;
+}
+.cal-post-chip:hover { background: var(--rose-light); }
+.cal-post-chip.draft {
+  background: var(--lav-light);
+  border-color: #D0C8E0;
+  color: var(--lavender);
+}
+.cal-post-chip.views-high {
+  background: var(--sage-light);
+  border-color: #B8D4C4;
+  color: var(--sage);
+}
+
+/* POST MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(28,25,23,0.6);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--warm-white);
+  border-radius: 16px;
+  width: 580px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+}
+.modal-header {
+  padding: 24px 28px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--charcoal);
+  line-height: 1.3;
+  flex: 1;
+}
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--muted);
+  padding: 0;
+  flex-shrink: 0;
+}
+.modal-body { padding: 20px 28px 28px; }
+.modal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.modal-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.tag-done { background: var(--sage-light); color: var(--sage); }
+.tag-draft { background: var(--lav-light); color: var(--lavender); }
+.tag-editing { background: var(--amber-light); color: var(--amber); }
+.modal-caption {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  max-height: 120px;
+  overflow-y: auto;
+  padding: 12px;
+  background: var(--cream);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.modal-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.modal-metric {
+  background: var(--cream);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+.modal-metric-val {
+  font-size: 20px;
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  color: var(--charcoal);
+  letter-spacing: -0.02em;
+}
+.modal-metric-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: 2px;
+}
+.modal-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--rose);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 14px;
+  border: 1px solid var(--rose-light);
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.modal-link:hover { background: var(--rose-pale); }
+
+/* KANBAN */
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.kanban-col {
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.kanban-col-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.kanban-col-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.kanban-col-count {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  background: var(--cream);
+  border-radius: 10px;
+  padding: 2px 8px;
+  color: var(--muted);
+}
+.col-done .kanban-col-header { background: #F0F7F3; }
+.col-done .kanban-col-title { color: var(--sage); }
+.col-editing .kanban-col-header { background: #FEF7ED; }
+.col-editing .kanban-col-title { color: var(--amber); }
+.col-draft .kanban-col-header { background: var(--lav-light); }
+.col-draft .kanban-col-title { color: var(--lavender); }
+.col-ideas .kanban-col-header { background: var(--cream); }
+.col-ideas .kanban-col-title { color: var(--muted); }
+
+.kanban-cards { padding: 12px; display: flex; flex-direction: column; gap: 8px; max-height: 680px; overflow-y: auto; }
+.kanban-card {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.kanban-card:hover {
+  border-color: var(--rose-light);
+  background: var(--warm-white);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+}
+.kanban-card-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--charcoal);
+  line-height: 1.4;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.kanban-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.kanban-card-date {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+.kanban-card-views {
+  font-size: 10px;
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.views-mega { color: var(--rose); }
+.views-high { color: var(--sage); }
+.views-mid { color: var(--amber); }
+.views-low { color: var(--muted); }
+.pillar-chip {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.pillar-vulnerable { background: var(--rose-pale); color: var(--rose); }
+.pillar-lifestyle { background: var(--sage-light); color: var(--sage); }
+.pillar-happy { background: var(--amber-light); color: var(--amber); }
+.pillar-hot { background: var(--lav-light); color: var(--lavender); }
+
+/* FOLLOWERS GRAPH */
+.graph-container {
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.graph-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.graph-legend {
+  display: flex;
+  gap: 20px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+.graph-body { padding: 24px; }
+.chart-area {
+  position: relative;
+  height: 280px;
+}
+.chart-svg { width: 100%; height: 100%; }
+
+/* FOLLOWERS WEEKLY TABLE */
+.weekly-table {
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.weekly-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.weekly-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  background: var(--cream);
+  border-bottom: 1px solid var(--border);
+}
+.weekly-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.weekly-table tr:last-child td { border-bottom: none; }
+.weekly-table tr:hover td { background: var(--cream); }
+.weekly-bar-cell { width: 200px; }
+.weekly-bar-bg {
+  background: var(--border);
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+}
+.weekly-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--rose), var(--lavender));
+  transition: width 0.8s ease;
+}
+
+/* TOP PERFORMERS TABLE */
+.perf-table-wrap {
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.perf-filters {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.filter-btn:hover, .filter-btn.active {
+  background: var(--charcoal);
+  border-color: var(--charcoal);
+  color: white;
+}
+.perf-table { width: 100%; border-collapse: collapse; }
+.perf-table th {
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  background: var(--cream);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+.perf-table th:hover { color: var(--charcoal); }
+.sort-arrow { margin-left: 4px; opacity: 0.4; }
+.sort-arrow.active { opacity: 1; color: var(--rose); }
+.perf-table td {
+  padding: 12px 14px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.perf-table tr:last-child td { border-bottom: none; }
+.perf-table tr:hover td { background: var(--rose-pale); cursor: pointer; }
+
+/* Tier badges */
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+}
+.tier-mega { background: #FFF0E8; color: #C17B3A; border: 1px solid #F5CAA0; }
+.tier-viral { background: var(--rose-pale); color: var(--rose); border: 1px solid var(--rose-light); }
+.tier-strong { background: var(--sage-light); color: var(--sage); border: 1px solid #B8D4C4; }
+.tier-avg { background: var(--lav-light); color: var(--lavender); border: 1px solid #D0C8E0; }
+.tier-low { background: var(--cream); color: var(--muted); border: 1px solid var(--border); }
+
+/* ER badge */
+.er-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.er-hot { background: #FFF0E8; color: var(--amber); }
+.er-good { background: var(--sage-light); color: var(--sage); }
+.er-ok { background: var(--lav-light); color: var(--lavender); }
+.er-low { color: var(--muted); }
+
+.rank-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  width: 24px;
+  text-align: center;
+}
+.rank-num.top3 { color: var(--gold); }
+
+.post-name-cell {
+  max-width: 260px;
+}
+.post-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--charcoal);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.post-date-small {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  margin-top: 2px;
+}
+
+.num-cell {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: right;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .header { padding: 16px 20px; }
+  .main { padding: 20px; }
+  .nav { padding: 0 20px; }
+  .metrics-row { grid-template-columns: repeat(2, 1fr); }
+  .kanban-board { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="avatar">J</div>
+    <div>
+      <div class="header-title">jojo.thrives</div>
+      <div class="header-sub"><span class="live-dot"></span>IG Control Room</div>
+    </div>
+  </div>
+  <div class="header-stats">
+    <div class="h-stat">
+      <div class="h-stat-num">18.5K</div>
+      <div class="h-stat-label">Followers</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-num">5.2M</div>
+      <div class="h-stat-label">Total Views</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-num">1.8%</div>
+      <div class="h-stat-label">Avg ER</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-num">65</div>
+      <div class="h-stat-label">Posts</div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-tab active" onclick="showSection('overview', this)">📊 Overview</div>
+  <div class="nav-tab" onclick="showSection('calendar', this)">📅 Posting Calendar</div>
+  <div class="nav-tab" onclick="showSection('kanban', this)">🗂 Posts Board</div>
+  <div class="nav-tab" onclick="showSection('growth', this)">📈 Follower Growth</div>
+  <div class="nav-tab" onclick="showSection('top', this)">🏆 Top Performers</div>
+</div>
+
+<div class="main">
+
+<!-- ======= OVERVIEW ======= -->
+<div id="section-overview" class="section active">
+  <div class="metrics-row">
+    <div class="metric-card rose">
+      <div class="metric-icon">👥</div>
+      <div class="metric-value">18.5K</div>
+      <div class="metric-label">Followers</div>
+      <div class="metric-delta delta-up">↑ Started ~Oct 2025</div>
+    </div>
+    <div class="metric-card sage">
+      <div class="metric-icon">👁</div>
+      <div class="metric-value">5.2M</div>
+      <div class="metric-label">Total Views</div>
+      <div class="metric-delta delta-up">↑ 992K top reel</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-icon">❤️</div>
+      <div class="metric-value">75.7K</div>
+      <div class="metric-label">Total Likes</div>
+      <div class="metric-delta delta-up">↑ 51.7K top post</div>
+    </div>
+    <div class="metric-card lav">
+      <div class="metric-icon">💬</div>
+      <div class="metric-value">1.8%</div>
+      <div class="metric-label">Avg Eng. Rate</div>
+      <div class="metric-delta delta-note">Best: 4.11%</div>
+    </div>
+    <div class="metric-card gold">
+      <div class="metric-icon">📌</div>
+      <div class="metric-value">65</div>
+      <div class="metric-label">Total Posts</div>
+      <div class="metric-delta delta-note">Since Dec 2025</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+
+    <!-- Top Posts mini list -->
+    <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'Playfair Display',serif;font-size:16px;">Top 5 Posts</span>
+        <span style="font-size:11px;color:var(--muted);">by views</span>
+      </div>
+      <div style="padding:8px 0;">
+        <div id="mini-top-posts"></div>
+      </div>
+    </div>
+
+    <!-- Content mix -->
+    <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border);">
+        <span style="font-family:'Playfair Display',serif;font-size:16px;">Content Insights</span>
+      </div>
+      <div style="padding:20px;">
+        <div id="insights-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini follower chart -->
+  <div class="graph-container">
+    <div class="graph-header">
+      <span style="font-family:'Playfair Display',serif;font-size:16px;">Follower Growth — Last 8 Weeks</span>
+      <div class="graph-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Weekly followers gained</div>
+      </div>
+    </div>
+    <div class="graph-body">
+      <div class="chart-area" style="height:180px;">
+        <canvas id="overview-chart" width="800" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= CALENDAR ======= -->
+<div id="section-calendar" class="section">
+  <div class="section-header">
+    <span class="section-title">Posting Calendar</span>
+    <span class="section-sub">Click any post to see details</span>
+  </div>
+  <div class="calendar-grid">
+    <div class="cal-month-header">
+      <button class="cal-nav-btn" onclick="changeMonth(-1)">← Prev</button>
+      <span id="cal-month-label" style="font-family:'Playfair Display',serif;font-size:20px;"></span>
+      <button class="cal-nav-btn" onclick="changeMonth(1)">Next →</button>
+    </div>
+    <div class="cal-header">
+      <div class="cal-day-label">Sun</div>
+      <div class="cal-day-label">Mon</div>
+      <div class="cal-day-label">Tue</div>
+      <div class="cal-day-label">Wed</div>
+      <div class="cal-day-label">Thu</div>
+      <div class="cal-day-label">Fri</div>
+      <div class="cal-day-label">Sat</div>
+    </div>
+    <div class="cal-body" id="cal-body"></div>
+  </div>
+</div>
+
+<!-- ======= KANBAN ======= -->
+<div id="section-kanban" class="section">
+  <div class="section-header">
+    <span class="section-title">Posts Board</span>
+    <span class="section-sub">All content by status · click to open</span>
+  </div>
+  <div class="kanban-board">
+    <div class="kanban-col col-done">
+      <div class="kanban-col-header">
+        <span class="kanban-col-title">✅ Published</span>
+        <span class="kanban-col-count" id="count-done">0</span>
+      </div>
+      <div class="kanban-cards" id="kanban-done"></div>
+    </div>
+    <div class="kanban-col col-editing">
+      <div class="kanban-col-header">
+        <span class="kanban-col-title">✏️ Editing</span>
+        <span class="kanban-col-count" id="count-editing">0</span>
+      </div>
+      <div class="kanban-cards" id="kanban-editing"></div>
+    </div>
+    <div class="kanban-col col-draft">
+      <div class="kanban-col-header">
+        <span class="kanban-col-title">📝 Draft</span>
+        <span class="kanban-col-count" id="count-draft">0</span>
+      </div>
+      <div class="kanban-cards" id="kanban-draft"></div>
+    </div>
+    <div class="kanban-col col-ideas">
+      <div class="kanban-col-header">
+        <span class="kanban-col-title">💡 Ideas</span>
+        <span class="kanban-col-count" id="count-ideas">0</span>
+      </div>
+      <div class="kanban-cards" id="kanban-ideas"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= GROWTH ======= -->
+<div id="section-growth" class="section">
+  <div class="section-header">
+    <span class="section-title">Follower Growth</span>
+    <span class="section-sub">Weekly new followers gained</span>
+  </div>
+  <div class="graph-container" style="margin-bottom:24px;">
+    <div class="graph-header">
+      <span style="font-family:'Playfair Display',serif;font-size:16px;">Weekly Follower Gain</span>
+      <div class="graph-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>New followers</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--lavender)"></div>Cumulative</div>
+      </div>
+    </div>
+    <div class="graph-body">
+      <div class="chart-area" style="height:240px;">
+        <canvas id="growth-chart" width="900" height="240"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="weekly-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>New Followers</th>
+          <th>Growth Bar</th>
+          <th>Total (est.)</th>
+          <th>Top Post That Week</th>
+          <th>Views</th>
+        </tr>
+      </thead>
+      <tbody id="growth-table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ======= TOP PERFORMERS ======= -->
+<div id="section-top" class="section">
+  <div class="section-header">
+    <span class="section-title">Top Performers</span>
+    <span class="section-sub">All published posts · sortable · click to open</span>
+  </div>
+  <div class="perf-table-wrap">
+    <div class="perf-filters">
+      <button class="filter-btn active" onclick="filterPosts('all', this)">All Posts</button>
+      <button class="filter-btn" onclick="filterPosts('mega', this)">🔥 Mega (500K+ views)</button>
+      <button class="filter-btn" onclick="filterPosts('viral', this)">⚡ Viral (100K+)</button>
+      <button class="filter-btn" onclick="filterPosts('strong', this)">💚 Strong (20K+)</button>
+      <button class="filter-btn" onclick="filterPosts('er', this)">📊 High ER (3%+)</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="perf-table" id="perf-table">
+        <thead>
+          <tr>
+            <th style="width:40px;">#</th>
+            <th onclick="sortTable('title')">Post <span class="sort-arrow">↕</span></th>
+            <th onclick="sortTable('views')" style="text-align:right;">Views <span class="sort-arrow active" id="sort-views">↓</span></th>
+            <th onclick="sortTable('likes')" style="text-align:right;">Likes <span class="sort-arrow" id="sort-likes">↕</span></th>
+            <th onclick="sortTable('comments')" style="text-align:right;">Comments <span class="sort-arrow" id="sort-comments">↕</span></th>
+            <th onclick="sortTable('er')" style="text-align:right;">ER% <span class="sort-arrow" id="sort-er">↕</span></th>
+            <th onclick="sortTable('followers')" style="text-align:right;">New Followers <span class="sort-arrow" id="sort-followers">↕</span></th>
+            <th>Tier</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="perf-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+
+<!-- POST MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <button class="modal-close" onclick="closeModalBtn()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta" id="modal-meta"></div>
+      <div class="modal-caption" id="modal-caption"></div>
+      <div class="modal-metrics" id="modal-metrics"></div>
+      <div id="modal-link-wrap"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA — populated from jojo.thrives IG analysis
+// ============================================================
+const POSTS = [
+  // Format: {id, title, caption, status, date, pillar, views, likes, comments, bookmarks, shares, followers, er, link}
+  {id:1, title:"2023: I got cheated on by my husband", caption:"In 2023, my heart broke into a million pieces and life was never the same again.\n\nSince then, I've done a lot of crying, surviving, and healing. Follow my journey if this resonates with you ❤️‍🩹\n\n#betrayaltrauma #singlemom #divorce #cheating #heartbreak", status:"Done", date:"2026-03-21", pillar:"Vulnerable Single Mom", views:992000, likes:24088, comments:283, bookmarks:0, shares:0, followers:500, er:2.54, link:"https://www.instagram.com/p/DWIbhRdEknW/"},
+  {id:2, title:"2023: Consumed by pain, betrayal, confusion and grief", caption:"In 2023, I was consumed by pain, betrayal, confusion, and grief. I had a long and dark road ahead, and every day felt like moving through cement. Like an exhausted animal fighting for its life, I fought hard as hell to figure things out, so my kids could have a chance at a healthier childhood.\n\nIf you're struggling to find yourself after divorce and betrayal trauma, you're not alone 🤍\n\n#startingover #healingjourney #betrayaltrauma #singlemom", status:"Done", date:"2026-02-05", pillar:"Vulnerable Single Mom", views:249000, likes:7233, comments:265, bookmarks:0, shares:0, followers:566, er:3.33, link:"https://www.instagram.com/p/DUXi0GnEhw0/"},
+  {id:3, title:"You'd never know — we divorced in secret", caption:"You'd never know…we divorced in secret. Our marriage was falling apart. I was depressed, and crying every night.\n\nThe first 7 months, I cried every single day. And then, I realized I had to get it together because my daughters needed me.\n\n#healing #betrayaltrauma #divorce #heartbreak #singlemom", status:"Done", date:"2026-03-09", pillar:"Vulnerable Single Mom", views:678000, likes:6835, comments:115, bookmarks:590, shares:193, followers:911, er:1.07, link:"https://www.instagram.com/p/DVpOCf0EiGx/"},
+  {id:4, title:"Being a single mom is a mixed bag of emotions", caption:"Being a single mom is a mixed bag of emotions and experiences that few would understand. For those of us on this path, how are you feeling about it?", status:"Done", date:"2026-02-16", pillar:"Vulnerable Single Mom", views:80129, likes:2583, comments:83, bookmarks:1000, shares:339, followers:1155, er:3.57, link:""},
+  {id:5, title:"Coparenting & divorce doesn't have to be hell", caption:"Coparenting & divorce doesn't have to be hell 🔥\n\nEveryone's situation is different. This is what worked for us:\n1. We went through a mediator so that it was on OUR terms\n2. We divorced in secret (without parents involved)...\n\nHow's everyone doing with their coparenting situation?", status:"Done", date:"2026-03-27", pillar:"Happily Single Mom", views:90108, likes:1254, comments:101, bookmarks:0, shares:0, followers:0, er:1.84, link:"https://www.instagram.com/p/DWYipo_EiEW/"},
+  {id:6, title:"At 36: divorced, quit corporate, moved across the world", caption:"At 36: I got divorced, became a single mom of 2 little girls, quit my corporate job, moved out of my 'forever' home in LA…and moved me and my kids across the world to start over.\n\nI hope my story becomes that for you.", status:"Done", date:"2025-12-08", pillar:"Vulnerable Single Mom", views:0, likes:1011, comments:144, bookmarks:0, shares:0, followers:0, er:0, link:"https://www.instagram.com/p/DSAmCwYEgjy/"},
+  {id:7, title:"POV: You're 37, divorced and moved to Asia with 2 kids", caption:"POV: You're 37, divorced and moved to Asia with 2 kids to rebuild your life from scratch...", status:"Done", date:"2026-02-13", pillar:"Happily Single Mom", views:184730, likes:1052, comments:194, bookmarks:0, shares:0, followers:566, er:0.99, link:""},
+  {id:8, title:"I lost myself in motherhood and marriage", caption:"I lost myself in motherhood and marriage, and put everyone needs before my own. It wasn't until everything fell apart and I found myself barely surviving.\n\nI learned that self-care is not selfish, and that my daughters need a happy and thriving mother as a role model.\n\n#startingover #singlemom #movingabroad", status:"Done", date:"2026-02-06", pillar:"Happily Single Mom", views:82404, likes:884, comments:47, bookmarks:0, shares:0, followers:0, er:1.30, link:"https://www.instagram.com/p/DUZ5JBjkjBM/"},
+  {id:9, title:"Just had my second baby — unusual charge on his credit card", caption:"Just had my second baby. While on maternity leave, I notice an unusual charge on his credit card bill.\n\nWhat could possibly happen?", status:"Done", date:"2026-04-01", pillar:"Vulnerable Single Mom", views:172000, likes:649, comments:23, bookmarks:0, shares:0, followers:0, er:0.43, link:""},
+  {id:10, title:"Can you be friends with your cheating ex husband?", caption:"Can you be friends with your serial cheating ex husband who made you a single mom?!\n\n#cheating #betrayaltrauma #divorce #singlemom #infidelity", status:"Done", date:"2026-04-12", pillar:"Vulnerable Single Mom", views:20400, likes:387, comments:59, bookmarks:0, shares:0, followers:0, er:3.04, link:"https://www.instagram.com/p/DXCQdWHEqp6/"},
+  {id:11, title:"I moved abroad because I outgrew the life I was told to want", caption:"I moved abroad because I outgrew the life I was told to want.", status:"Done", date:"2026-03-15", pillar:"Happily Single Mom", views:77162, likes:282, comments:10, bookmarks:0, shares:0, followers:0, er:0.42, link:""},
+  {id:12, title:"What they don't tell you about moving to HK in your 30s", caption:"What they don't tell you about moving to Hong Kong with kids in your 30s...\n\n#hongkong #homekong #expat #hk #hkexpat", status:"Done", date:"2026-03-06", pillar:"Humble Roots Lifestyle", views:125242, likes:604, comments:28, bookmarks:0, shares:0, followers:58, er:0.57, link:"https://www.instagram.com/p/DVi3P1xkioZ/"},
+  {id:13, title:"Are you in your single mom era?", caption:"Are you in your single mom era?", status:"Done", date:"2026-03-04", pillar:"Vulnerable Single Mom", views:53792, likes:508, comments:18, bookmarks:0, shares:0, followers:59, er:1.08, link:""},
+  {id:14, title:"Aren't you scared of becoming a single mom?", caption:"Aren't you scared of becoming a single mom?", status:"Done", date:"2026-03-01", pillar:"Vulnerable Single Mom", views:54655, likes:716, comments:13, bookmarks:118, shares:70, followers:23, er:1.41, link:""},
+  {id:15, title:"She's going to have a difficult life as a single mom", caption:'"She\'s going to have a difficult life as a single mom"', status:"Done", date:"2026-02-27", pillar:"Vulnerable Single Mom", views:47559, likes:382, comments:24, bookmarks:23, shares:10, followers:23, er:1.01, link:""},
+  {id:16, title:"Plan A — married by 29, kids by 31 and 34", caption:"Plan A: Married by 29. Kid #1 by 31. Kid #2 by 34.", status:"Done", date:"2026-02-25", pillar:"Vulnerable Single Mom", views:79825, likes:589, comments:12, bookmarks:39, shares:12, followers:44, er:0.80, link:""},
+  {id:17, title:"Society will scare you into thinking it's safer to be stuck", caption:"Society will scare you into thinking that it's safer to be stuck, and to stay quiet.\n\nWhen you become a single mom, you're suddenly subjected to all kinds of assumptions from people who don't know your story or your heart.\n\n#singlemoms #healingjourney #motherhood #startingover", status:"Done", date:"2026-04-18", pillar:"Vulnerable Single Mom", views:8370, likes:256, comments:22, bookmarks:0, shares:0, followers:0, er:4.11, link:"https://www.instagram.com/p/DXQLjkHEolY/"},
+  {id:18, title:"I'm too scared to get a divorce", caption:'"I\'m too scared to get a divorce"', status:"Done", date:"2026-02-23", pillar:"Vulnerable Single Mom", views:34480, likes:402, comments:11, bookmarks:0, shares:0, followers:0, er:1.29, link:""},
+  {id:19, title:"Surviving Betrayal Trauma through pregnancy/postpartum", caption:"Surviving Betrayal Trauma through pregnancy and postpartum...", status:"Done", date:"2026-03-30", pillar:"Vulnerable Single Mom", views:15819, likes:278, comments:20, bookmarks:24, shares:12, followers:0, er:2.26, link:""},
+  {id:20, title:"The 3 stages of Healing", caption:"How do you heal from the traumas of cheating and becoming a single mother?\n\nStage 1: Shock. Stage 2: Survival mode. Stage 3: Finding safety and healing.\n\n#cheating #betrayaltrauma", status:"Done", date:"2026-04-06", pillar:"Vulnerable Single Mom", views:14108, likes:203, comments:13, bookmarks:0, shares:0, followers:0, er:1.81, link:"https://www.instagram.com/p/DWxzLYNks3L/"},
+  {id:21, title:"Red Flags — Part 1", caption:"Spotting Red Flags...", status:"Done", date:"2026-04-19", pillar:"Vulnerable Single Mom", views:12800, likes:244, comments:19, bookmarks:0, shares:0, followers:0, er:2.50, link:"https://www.instagram.com/p/DXToJVHEhIP/"},
+  {id:22, title:"Red Flags — Part 2: The Trickle Effect", caption:"Part 2 of Red Flags 🚩\n\nThe Trickle Effect is real…with cheating, gaslighting, lies, deception…it happens slowly and gradually. No woman VOLUNTARILY signs up for this shit.", status:"Done", date:"2026-04-19", pillar:"Vulnerable Single Mom", views:11349, likes:252, comments:24, bookmarks:0, shares:0, followers:0, er:3.09, link:"https://www.instagram.com/p/DXToJVHEhIP/"},
+  {id:23, title:"I never suspected my husband of cheating", caption:"I never suspected my husband of cheating…then I discovered a disturbing trail of records and a lifestyle of infidelity.\n\nDid you ever suspect your spouse of cheating?", status:"Done", date:"2026-04-01", pillar:"Vulnerable Single Mom", views:172794, likes:649, comments:23, bookmarks:0, shares:0, followers:0, er:0.43, link:"https://www.instagram.com/p/DWkYnLNCkU6/"},
+  {id:24, title:"Never thought I'd be grateful to be a single mom", caption:"Never thought the day would come where I'd feel grateful to be a single mom ❤️‍🩹", status:"Done", date:"2026-03-15", pillar:"Happily Single Mom", views:0, likes:677, comments:23, bookmarks:0, shares:0, followers:0, er:0, link:""},
+  {id:25, title:"Shifting out of victim mentality as a single mom", caption:"Shifting out of victim mentality as a single mom...", status:"Done", date:"2026-03-14", pillar:"Happily Single Mom", views:42370, likes:374, comments:18, bookmarks:0, shares:0, followers:0, er:1.05, link:""},
+  {id:26, title:"do is travel more and...", caption:"Today I give myself PERMISSION to go on a girl's trip to Vietnam ✨", status:"Done", date:"2026-02-12", pillar:"Happily Single Mom", views:82404, likes:884, comments:47, bookmarks:87, shares:148, followers:0, er:1.30, link:""},
+  {id:27, title:"I'm grateful to be a single mom", caption:"I'm grateful to be a single mom", status:"Done", date:"2026-02-20", pillar:"Happily Single Mom", views:44695, likes:350, comments:12, bookmarks:0, shares:0, followers:0, er:0.89, link:""},
+  {id:28, title:"Single mommies in your 30s: Let's thrive", caption:"Single mommies in your 30s: Let's thrive ✨", status:"Done", date:"2026-02-19", pillar:"Happily Single Mom", views:30678, likes:138, comments:3, bookmarks:0, shares:0, followers:0, er:0.49, link:""},
+  {id:29, title:"Today I give myself PERMISSION to be a happy & fun mom", caption:"Today I give myself PERMISSION to be a happy & fun mom", status:"Done", date:"2026-02-15", pillar:"Happily Single Mom", views:21013, likes:238, comments:14, bookmarks:19, shares:13, followers:28, er:1.40, link:""},
+  {id:30, title:"You work so hard, who are you trying to impress?", caption:'"You work so hard, who are you trying to impress?"', status:"Done", date:"2026-02-19", pillar:"Happily Single Mom", views:25709, likes:185, comments:12, bookmarks:14, shares:0, followers:5, er:0.91, link:""},
+  {id:31, title:"Undiet Plan", caption:"", status:"Editing", date:"", pillar:"Happily Single Mom", views:0, likes:0, comments:0, bookmarks:0, shares:0, followers:0, er:0, link:""},
+  {id:32, title:"Synchronicities", caption:"", status:"Editing", date:"", pillar:"Vulnerable Single Mom", views:0, likes:0, comments:0, bookmarks:0, shares:0, followers:0, er:0, link:""},
+  {id:33, title:"I spent my whole life living for others (life story)", caption:"I spent the first half of my life living for others.\n\nI studied hard, went to ivy league, built a career in corporate tech...\n\nFollow along for the ride 🤍", status:"Done", date:"2026-02-03", pillar:"Vulnerable Single Mom", views:30213, likes:150, comments:15, bookmarks:0, shares:0, followers:0, er:0.62, link:""},
+  {id:34, title:"In your 30s you'll get the opportunity to rebuild your life", caption:"In your 30's, you'll get the opportunity to rebuild your entire life after divorce...", status:"Done", date:"2026-02-03", pillar:"Happily Single Mom", views:18485, likes:98, comments:12, bookmarks:0, shares:0, followers:0, er:0.79, link:""},
+  {id:35, title:"Becoming a single mom my nervous system was a wreck", caption:"Becoming a single mom, my nervous system was a wreck. I eventually realized I needed to heal to be the mom my children deserve.", status:"Done", date:"2026-01-24", pillar:"Vulnerable Single Mom", views:15964, likes:86, comments:9, bookmarks:0, shares:0, followers:0, er:0.76, link:""},
+];
+
+// Follower growth by week (estimated from data)
+const WEEKLY_GROWTH = [
+  {week:"Dec 8–14", newFollowers:320, total:2100, topPost:"Origin story launch"},
+  {week:"Dec 15–21", newFollowers:180, total:2280, topPost:"Family of Three"},
+  {week:"Dec 22–28", newFollowers:210, total:2490, topPost:"Holiday family content"},
+  {week:"Jan 5–11", newFollowers:280, total:2770, topPost:"Unpopular life choices"},
+  {week:"Jan 19–25", newFollowers:390, total:3160, topPost:"Nervous system healing"},
+  {week:"Feb 1–7", newFollowers:1240, total:4400, topPost:"2023 consumed by pain (7.2K likes)"},
+  {week:"Feb 8–14", newFollowers:890, total:5290, topPost:"POV: 37, divorced, Asia"},
+  {week:"Feb 15–21", newFollowers:2100, total:7390, topPost:"Single mom mixed bag (2.5K likes)"},
+  {week:"Feb 22–28", newFollowers:760, total:8150, topPost:"I'm too scared to divorce"},
+  {week:"Mar 1–7", newFollowers:1450, total:9600, topPost:"Are you scared of being single mom"},
+  {week:"Mar 8–14", newFollowers:3200, total:12800, topPost:"Divorced in secret (6.8K likes)"},
+  {week:"Mar 15–21", newFollowers:4100, total:16900, topPost:"2023 heart broke (24K likes)"},
+  {week:"Mar 22–28", newFollowers:980, total:17880, topPost:"Coparenting doesn't have to be hell"},
+  {week:"Apr 1–7", newFollowers:520, total:18400, topPost:"Just had my second baby"},
+  {week:"Apr 8–14", newFollowers:380, total:18780, topPost:"Friends with cheating ex?"},
+  {week:"Apr 15–21", newFollowers:210, total:18990, topPost:"Red Flags series"},
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n) {
+  if (!n) return '—';
+  if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
+  if (n >= 1000) return (n/1000).toFixed(n >= 100000 ? 0 : 1)+'K';
+  return n.toLocaleString();
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+}
+function shortDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+}
+function getPillarClass(p) {
+  if (!p) return '';
+  if (p.includes('Vulnerable')) return 'pillar-vulnerable';
+  if (p.includes('Humble') || p.includes('Lifestyle')) return 'pillar-lifestyle';
+  if (p.includes('Happy') || p.includes('Happily')) return 'pillar-happy';
+  if (p.includes('Hot')) return 'pillar-hot';
+  return 'pillar-vulnerable';
+}
+function getViewsClass(v) {
+  if (v >= 500000) return 'views-mega';
+  if (v >= 100000) return 'views-high';
+  if (v >= 20000) return 'views-mid';
+  return 'views-low';
+}
+function getTierBadge(v, er) {
+  if (v >= 500000) return `<span class="tier-badge tier-mega">🔥 Mega</span>`;
+  if (v >= 100000) return `<span class="tier-badge tier-viral">⚡ Viral</span>`;
+  if (v >= 20000 || er >= 3) return `<span class="tier-badge tier-strong">💚 Strong</span>`;
+  if (v >= 5000 || er >= 1.5) return `<span class="tier-badge tier-avg">🔵 Avg</span>`;
+  return `<span class="tier-badge tier-low">Low</span>`;
+}
+function getERBadge(er) {
+  if (!er) return `<span class="er-badge er-low">—</span>`;
+  const cls = er >= 3 ? 'er-hot' : er >= 2 ? 'er-good' : er >= 1 ? 'er-ok' : 'er-low';
+  return `<span class="er-badge ${cls}">${er.toFixed(2)}%</span>`;
+}
+function getStatusTag(s) {
+  if (s === 'Done') return `<span class="modal-tag tag-done">Published</span>`;
+  if (s === 'Editing') return `<span class="modal-tag tag-editing">Editing</span>`;
+  return `<span class="modal-tag tag-draft">Draft</span>`;
+}
+
+// ============================================================
+// SECTION SWITCHING
+// ============================================================
+function showSection(name, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-'+name).classList.add('active');
+  el.classList.add('active');
+  if (name === 'growth') renderGrowthChart();
+  if (name === 'overview') renderOverviewChart();
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openPost(id) {
+  const p = POSTS.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('modal-title').textContent = p.title;
+  document.getElementById('modal-meta').innerHTML = `
+    ${getStatusTag(p.status)}
+    ${p.date ? `<span class="modal-tag" style="background:var(--cream);color:var(--muted);">📅 ${fmtDate(p.date)}</span>` : ''}
+    ${p.pillar ? `<span class="modal-tag" style="background:var(--cream);color:var(--muted);">${p.pillar.split(':')[0] || p.pillar}</span>` : ''}
+  `;
+  document.getElementById('modal-caption').textContent = p.caption || '(No caption added yet)';
+  document.getElementById('modal-metrics').innerHTML = `
+    <div class="modal-metric"><div class="modal-metric-val">${fmt(p.views)}</div><div class="modal-metric-label">Views</div></div>
+    <div class="modal-metric"><div class="modal-metric-val">${fmt(p.likes)}</div><div class="modal-metric-label">Likes</div></div>
+    <div class="modal-metric"><div class="modal-metric-val">${fmt(p.comments)}</div><div class="modal-metric-label">Comments</div></div>
+    <div class="modal-metric"><div class="modal-metric-val">${p.er ? p.er.toFixed(2)+'%' : '—'}</div><div class="modal-metric-label">Eng. Rate</div></div>
+    <div class="modal-metric"><div class="modal-metric-val">${fmt(p.bookmarks)}</div><div class="modal-metric-label">Bookmarks</div></div>
+    <div class="modal-metric"><div class="modal-metric-val">${fmt(p.followers) || '—'}</div><div class="modal-metric-label">New Followers</div></div>
+  `;
+  const linkWrap = document.getElementById('modal-link-wrap');
+  if (p.link) {
+    linkWrap.innerHTML = `<a href="${p.link}" target="_blank" class="modal-link">↗ View on Instagram</a>`;
+  } else { linkWrap.innerHTML = ''; }
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModalBtn();
+}
+function closeModalBtn() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ============================================================
+// CALENDAR
+// ============================================================
+let calYear = 2026, calMonth = 2; // 0-indexed month: 2 = March
+
+function renderCalendar() {
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month-label').textContent = `${months[calMonth]} ${calYear}`;
+  const body = document.getElementById('cal-body');
+  body.innerHTML = '';
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const today = new Date();
+
+  for (let i = 0; i < firstDay; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell empty';
+    body.appendChild(cell);
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const cell = document.createElement('div');
+    const isToday = today.getFullYear()===calYear && today.getMonth()===calMonth && today.getDate()===d;
+    cell.className = 'cal-cell' + (isToday ? ' today' : '');
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayPosts = POSTS.filter(p => p.date === dateStr);
+    let dateHtml = '';
+    if (isToday) {
+      dateHtml = `<div class="cal-date">${d}</div>`;
+    } else {
+      dateHtml = `<div class="cal-date" style="font-size:12px;font-weight:600;color:var(--muted);">${d}</div>`;
+    }
+    let chipsHtml = '';
+    dayPosts.forEach(p => {
+      const isHighView = p.views >= 100000;
+      const cls = p.status !== 'Done' ? 'draft' : isHighView ? 'views-high' : '';
+      chipsHtml += `<span class="cal-post-chip ${cls}" onclick="openPost(${p.id})" title="${p.title}">${p.title.length > 22 ? p.title.substring(0,22)+'…' : p.title}</span>`;
+    });
+    cell.innerHTML = dateHtml + chipsHtml;
+    body.appendChild(cell);
+  }
+}
+function changeMonth(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+
+// ============================================================
+// KANBAN
+// ============================================================
+function renderKanban() {
+  const cols = { Done: 'done', Editing: 'editing', Draft: 'draft', Ideas: 'ideas' };
+  Object.entries(cols).forEach(([status, key]) => {
+    const colPosts = POSTS.filter(p => {
+      if (status === 'Draft') return p.status === 'Draft' || (!p.status);
+      return p.status === status;
+    });
+    const container = document.getElementById('kanban-'+key);
+    const counter = document.getElementById('count-'+key);
+    if (counter) counter.textContent = colPosts.length;
+    if (!container) return;
+    container.innerHTML = colPosts.map(p => {
+      const vc = getViewsClass(p.views);
+      const pillarClass = getPillarClass(p.pillar);
+      return `
+        <div class="kanban-card" onclick="openPost(${p.id})">
+          <div class="kanban-card-title">${p.title}</div>
+          <div class="kanban-card-meta">
+            ${p.pillar ? `<span class="pillar-chip ${pillarClass}">${p.pillar.replace('Mindset: ','').replace('Lifestyle: ','').split(' ').slice(0,2).join(' ')}</span>` : ''}
+            <span class="kanban-card-date">${p.date ? shortDate(p.date) : '—'}</span>
+            ${p.views > 0 ? `<span class="kanban-card-views ${vc}">👁 ${fmt(p.views)}</span>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  });
+}
+
+// ============================================================
+// GROWTH TABLE
+// ============================================================
+function renderGrowthTable() {
+  const maxFollowers = Math.max(...WEEKLY_GROWTH.map(w => w.newFollowers));
+  const tbody = document.getElementById('growth-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = WEEKLY_GROWTH.map(w => {
+    const pct = Math.round((w.newFollowers / maxFollowers) * 100);
+    return `
+      <tr>
+        <td style="font-family:'DM Mono',monospace;font-size:12px;">${w.week}</td>
+        <td class="num-cell" style="color:${w.newFollowers > 1000 ? 'var(--rose)' : 'var(--charcoal)'};">${w.newFollowers.toLocaleString()}</td>
+        <td class="weekly-bar-cell">
+          <div class="weekly-bar-bg">
+            <div class="weekly-bar-fill" style="width:${pct}%"></div>
+          </div>
+        </td>
+        <td class="num-cell">${w.total.toLocaleString()}</td>
+        <td style="font-size:12px;max-width:220px;">${w.topPost}</td>
+        <td>—</td>
+      </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// TOP PERFORMERS TABLE
+// ============================================================
+let currentFilter = 'all';
+let currentSort = {col:'views', dir:-1};
+
+function filterPosts(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPerfTable();
+}
+function sortTable(col) {
+  if (currentSort.col === col) {
+    currentSort.dir *= -1;
+  } else {
+    currentSort.col = col;
+    currentSort.dir = -1;
+  }
+  // Reset arrows
+  ['views','likes','comments','er','followers'].forEach(c => {
+    const el = document.getElementById('sort-'+c);
+    if (el) el.textContent = '↕';
+  });
+  const el = document.getElementById('sort-'+col);
+  if (el) { el.textContent = currentSort.dir === -1 ? '↓' : '↑'; el.classList.add('active'); }
+  renderPerfTable();
+}
+function renderPerfTable() {
+  let posts = POSTS.filter(p => p.status === 'Done');
+  if (currentFilter === 'mega') posts = posts.filter(p => p.views >= 500000);
+  else if (currentFilter === 'viral') posts = posts.filter(p => p.views >= 100000);
+  else if (currentFilter === 'strong') posts = posts.filter(p => p.views >= 20000);
+  else if (currentFilter === 'er') posts = posts.filter(p => p.er >= 3);
+
+  const col = currentSort.col;
+  const dir = currentSort.dir;
+  posts.sort((a,b) => {
+    let av = col === 'title' ? a.title : col === 'views' ? a.views : col === 'likes' ? a.likes : col === 'comments' ? a.comments : col === 'er' ? a.er : col === 'followers' ? a.followers : a.views;
+    let bv = col === 'title' ? b.title : col === 'views' ? b.views : col === 'likes' ? b.likes : col === 'comments' ? b.comments : col === 'er' ? b.er : col === 'followers' ? b.followers : b.views;
+    if (typeof av === 'string') return dir * av.localeCompare(bv);
+    return dir * (bv - av);
+  });
+
+  const tbody = document.getElementById('perf-table-body');
+  tbody.innerHTML = posts.map((p, i) => `
+    <tr onclick="openPost(${p.id})">
+      <td><span class="rank-num ${i < 3 ? 'top3' : ''}">${i+1}</span></td>
+      <td class="post-name-cell">
+        <div class="post-name">${p.title}</div>
+        <div class="post-date-small">${p.date ? fmtDate(p.date) : '—'}</div>
+      </td>
+      <td class="num-cell" style="color:${p.views >= 100000 ? 'var(--rose)' : 'var(--charcoal)'};">${fmt(p.views)}</td>
+      <td class="num-cell">${fmt(p.likes)}</td>
+      <td class="num-cell">${fmt(p.comments)}</td>
+      <td style="text-align:right;">${getERBadge(p.er)}</td>
+      <td class="num-cell">${fmt(p.followers)}</td>
+      <td>${getTierBadge(p.views, p.er)}</td>
+      <td style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap;">${p.date ? shortDate(p.date) : '—'}</td>
+    </tr>`).join('');
+}
+
+// ============================================================
+// OVERVIEW MINI CONTENT
+// ============================================================
+function renderOverviewMini() {
+  // Top 5 posts
+  const top5 = [...POSTS].filter(p=>p.views>0).sort((a,b)=>b.views-a.views).slice(0,5);
+  document.getElementById('mini-top-posts').innerHTML = top5.map((p,i) => `
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid var(--border);cursor:pointer;" onclick="openPost(${p.id})">
+      <div style="font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:${i===0?'var(--gold)':'var(--muted)'};width:20px;flex-shrink:0;">${i+1}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title}</div>
+        <div style="font-size:10px;color:var(--muted);">${shortDate(p.date)}</div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--rose);flex-shrink:0;">${fmt(p.views)}</div>
+    </div>`).join('');
+
+  // Insights
+  const done = POSTS.filter(p=>p.status==='Done');
+  const avgViews = done.filter(p=>p.views>0).reduce((s,p)=>s+p.views,0)/done.filter(p=>p.views>0).length;
+  const topER = [...done].sort((a,b)=>b.er-a.er)[0];
+  document.getElementById('insights-content').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;justify-content:space-between;padding:12px;background:var(--rose-pale);border-radius:8px;">
+        <div style="font-size:12px;color:var(--rose);font-weight:500;">Avg views per reel</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--rose);">${fmt(Math.round(avgViews))}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:12px;background:var(--sage-light);border-radius:8px;">
+        <div style="font-size:12px;color:var(--sage);font-weight:500;">Best engagement rate</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--sage);">${topER?.er.toFixed(2)}%</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:12px;background:var(--amber-light);border-radius:8px;">
+        <div style="font-size:12px;color:var(--amber);font-weight:500;">Posts with 100K+ views</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--amber);">${done.filter(p=>p.views>=100000).length}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:12px;background:var(--lav-light);border-radius:8px;">
+        <div style="font-size:12px;color:var(--lavender);font-weight:500;">Posts with 3%+ ER</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--lavender);">${done.filter(p=>p.er>=3).length}</div>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// CHARTS (Canvas)
+// ============================================================
+function drawBarChart(canvasId, labels, data, color, maxVal) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 800;
+  const H = canvas.offsetHeight || 200;
+  canvas.width = W;
+  canvas.height = H;
+  ctx.clearRect(0,0,W,H);
+
+  const padL=40, padR=20, padT=20, padB=40;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+  const max = maxVal || Math.max(...data) * 1.1 || 1;
+  const barW = Math.floor(chartW / data.length * 0.65);
+  const gap = chartW / data.length;
+
+  // Grid lines
+  ctx.strokeStyle = '#E7E0D8';
+  ctx.lineWidth = 1;
+  [0.25, 0.5, 0.75, 1].forEach(frac => {
+    const y = padT + chartH * (1 - frac);
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(W-padR, y);
+    ctx.stroke();
+    ctx.fillStyle = '#A8A29E';
+    ctx.font = '10px DM Mono, monospace';
+    ctx.textAlign = 'right';
+    const val = max * frac;
+    ctx.fillText(val >= 1000 ? Math.round(val/1000)+'k' : Math.round(val), padL-4, y+3);
+  });
+
+  // Bars
+  data.forEach((val, i) => {
+    const barH = (val / max) * chartH;
+    const x = padL + gap * i + (gap - barW) / 2;
+    const y = padT + chartH - barH;
+
+    // Gradient
+    const grad = ctx.createLinearGradient(0, y, 0, y + barH);
+    grad.addColorStop(0, color || '#D4627A');
+    grad.addColorStop(1, (color || '#D4627A') + '60');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x, y, barW, barH, [3,3,0,0]) : ctx.rect(x, y, barW, barH);
+    ctx.fill();
+
+    // Label
+    if (labels[i]) {
+      ctx.fillStyle = '#A8A29E';
+      ctx.font = '9px DM Sans, sans-serif';
+      ctx.textAlign = 'center';
+      const labelText = labels[i].length > 8 ? labels[i].substring(0,8) : labels[i];
+      ctx.fillText(labelText, x + barW/2, H - padB + 14);
+    }
+  });
+}
+
+function renderOverviewChart() {
+  setTimeout(() => {
+    drawBarChart('overview-chart',
+      WEEKLY_GROWTH.slice(-8).map(w => w.week.split('–')[0]),
+      WEEKLY_GROWTH.slice(-8).map(w => w.newFollowers),
+      '#D4627A');
+  }, 50);
+}
+
+function renderGrowthChart() {
+  setTimeout(() => {
+    const canvas = document.getElementById('growth-chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.offsetWidth || 900;
+    const H = 240;
+    canvas.width = W;
+    canvas.height = H;
+    ctx.clearRect(0,0,W,H);
+
+    const padL=50, padR=20, padT=20, padB=50;
+    const chartW = W - padL - padR;
+    const chartH = H - padT - padB;
+    const data = WEEKLY_GROWTH;
+    const maxBar = Math.max(...data.map(w=>w.newFollowers)) * 1.1;
+    const maxLine = Math.max(...data.map(w=>w.total));
+    const barW = Math.floor(chartW / data.length * 0.5);
+    const gap = chartW / data.length;
+
+    // Grid
+    ctx.strokeStyle = '#E7E0D8';
+    ctx.lineWidth = 1;
+    [0.25, 0.5, 0.75, 1].forEach(frac => {
+      const y = padT + chartH * (1 - frac);
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W-padR, y); ctx.stroke();
+      ctx.fillStyle = '#A8A29E';
+      ctx.font = '10px DM Mono, monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(Math.round(maxBar * frac / 100)*100, padL-4, y+3);
+    });
+
+    // Bars (new followers)
+    data.forEach((w, i) => {
+      const barH = (w.newFollowers / maxBar) * chartH;
+      const x = padL + gap * i + (gap - barW) / 2;
+      const y = padT + chartH - barH;
+      const grad = ctx.createLinearGradient(0, y, 0, y+barH);
+      grad.addColorStop(0, '#D4627A');
+      grad.addColorStop(1, '#D4627A40');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x, y, barW, barH, [3,3,0,0]);
+      else ctx.rect(x, y, barW, barH);
+      ctx.fill();
+    });
+
+    // Line (cumulative)
+    ctx.strokeStyle = '#8B7AA8';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5,3]);
+    ctx.beginPath();
+    data.forEach((w, i) => {
+      const x = padL + gap * i + gap/2;
+      const y = padT + chartH - (w.total / maxLine) * chartH;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Dots on line
+    data.forEach((w, i) => {
+      const x = padL + gap * i + gap/2;
+      const y = padT + chartH - (w.total / maxLine) * chartH;
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, Math.PI*2);
+      ctx.fillStyle = '#8B7AA8';
+      ctx.fill();
+    });
+
+    // X labels
+    data.forEach((w, i) => {
+      const x = padL + gap * i + gap/2;
+      ctx.fillStyle = '#A8A29E';
+      ctx.font = '9px DM Sans, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(w.week.split('–')[0], x, H - padB + 18);
+    });
+
+    renderGrowthTable();
+  }, 50);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  renderCalendar();
+  renderKanban();
+  renderPerfTable();
+  renderOverviewMini();
+  renderOverviewChart();
+});
+</script>
+</body>
+</html>
