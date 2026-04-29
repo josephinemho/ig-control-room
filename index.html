@@ -24,7 +24,9 @@
   --lav-light: #E8E3F0;
   --ink: #2D2926;
 }
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
   font-family: 'DM Sans', sans-serif;
   background: var(--cream);
@@ -60,6 +62,12 @@ body {
   font-size: 11px; color: rgba(255,255,255,0.5);
   font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase;
 }
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #4CAF7D; display: inline-block; margin-right: 5px;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 .header-stats { display: flex; gap: 32px; }
 .h-stat { text-align: right; }
 .h-stat-num {
@@ -68,290 +76,302 @@ body {
 }
 .h-stat-label {
   font-size: 10px; color: rgba(255,255,255,0.45);
-  text-transform: uppercase; letter-spacing: 0.08em;
+  text-transform: uppercase; letter-spacing: 0.1em;
 }
 
-/* TABS */
-.tab-bar {
+/* NAV TABS */
+.nav {
   background: var(--warm-white);
   border-bottom: 1px solid var(--border);
   padding: 0 40px;
   display: flex;
+  gap: 0;
 }
-.tab-btn {
-  padding: 16px 20px;
+.nav-tab {
+  padding: 14px 24px;
   font-size: 13px; font-weight: 500; color: var(--muted);
-  border: none; background: none; cursor: pointer;
+  cursor: pointer;
   border-bottom: 2px solid transparent;
-  transition: all 0.2s; white-space: nowrap;
+  transition: all 0.2s; white-space: nowrap; letter-spacing: 0.01em;
 }
-.tab-btn:hover { color: var(--charcoal); }
-.tab-btn.active {
+.nav-tab:hover { color: var(--charcoal); }
+.nav-tab.active {
   color: var(--charcoal);
-  border-bottom-color: var(--rose);
+  border-bottom-color: var(--charcoal);
   font-weight: 600;
 }
 
-/* CONTENT */
-.tab-content { display: none; padding: 32px 40px; }
-.tab-content.active { display: block; }
+/* MAIN */
+.main { padding: 32px 40px; max-width: 1400px; }
 
-/* STAT CARDS */
-.cards-row {
+/* SECTIONS */
+.section { display: none; }
+.section.active { display: block; }
+
+/* OVERVIEW METRICS */
+.metrics-row {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 16px;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
-.card {
+.metric-card {
   background: var(--warm-white);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
+  position: relative; overflow: hidden;
 }
-.card-icon { font-size: 20px; margin-bottom: 10px; }
-.card-value {
-  font-family: 'DM Mono', monospace;
+.metric-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.metric-card.rose::before { background: var(--rose); }
+.metric-card.sage::before { background: var(--sage); }
+.metric-card.amber::before { background: var(--amber); }
+.metric-card.lav::before { background: var(--lavender); }
+.metric-card.gold::before { background: var(--gold); }
+.metric-icon { font-size: 18px; margin-bottom: 10px; opacity: 0.7; }
+.metric-value {
   font-size: 28px; font-weight: 600; color: var(--charcoal);
-  letter-spacing: -0.03em;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: -0.03em; line-height: 1; margin-bottom: 4px;
 }
-.card-label {
-  font-size: 11px; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--muted); margin-top: 4px;
-}
-.card-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
-.card-sub span { color: var(--sage); font-weight: 600; }
-
-/* TWO COL */
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-.panel {
-  background: var(--warm-white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px;
-}
-.panel-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 15px; font-weight: 700;
-  color: var(--charcoal); margin-bottom: 16px;
-}
-.panel-title-row {
-  display: flex; justify-content: space-between;
-  align-items: baseline; margin-bottom: 16px;
-}
-.panel-sub {
+.metric-label {
   font-size: 11px; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 0.06em;
+  text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500;
 }
-.panel-full {
-  background: var(--warm-white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px; margin-bottom: 24px;
-}
+.metric-delta { font-size: 11px; font-weight: 500; margin-top: 6px; }
+.delta-up { color: var(--sage); }
+.delta-note { color: var(--muted); }
 
-/* TOP LIST */
-.top-list { list-style: none; }
-.top-list li {
-  display: flex; align-items: center; gap: 14px;
-  padding: 10px 0; border-bottom: 1px solid var(--border);
+/* SECTION HEADERS */
+.section-header {
+  display: flex; align-items: baseline;
+  justify-content: space-between; margin-bottom: 20px;
 }
-.top-list li:last-child { border-bottom: none; }
-.rank {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px; color: var(--muted); width: 16px; flex-shrink: 0;
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; color: var(--charcoal); font-weight: 400;
 }
-.post-info { flex: 1; min-width: 0; }
-.post-title {
-  font-size: 13px; font-weight: 500; color: var(--charcoal);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.post-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.post-views {
-  font-family: 'DM Mono', monospace;
-  font-size: 13px; font-weight: 600; color: var(--rose);
-}
-
-/* INSIGHTS */
-.insight-item {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 12px 16px; border-radius: 8px; margin-bottom: 10px; font-size: 13px;
-}
-.insight-item:last-child { margin-bottom: 0; }
-.insight-val { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 600; }
-.bg-rose-pale { background: var(--rose-pale); }
-.bg-sage-light { background: var(--sage-light); }
-.bg-amber-light { background: var(--amber-light); }
-.bg-lav-light { background: var(--lav-light); }
-.col-rose { color: var(--rose); }
-.col-sage { color: var(--sage); }
-.col-amber { color: var(--amber); }
-.col-lav { color: var(--lavender); }
-
-/* GROWTH CHART */
-.chart-wrap {
-  position: relative;
-  height: 160px;
-  display: flex; align-items: flex-end;
-  gap: 6px; padding-top: 20px;
-}
-.bar-col {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; height: 100%; justify-content: flex-end; gap: 4px;
-}
-.bar {
-  width: 100%; border-radius: 4px 4px 0 0;
-  background: var(--rose-light);
-  transition: background 0.2s; cursor: pointer; position: relative;
-}
-.bar:hover { background: var(--rose); }
-.bar.highlight { background: var(--rose); }
-.bar-label { font-size: 9px; color: var(--muted); text-align: center; white-space: nowrap; }
-.bar-tooltip {
-  position: absolute; bottom: calc(100% + 4px);
-  left: 50%; transform: translateX(-50%);
-  background: var(--charcoal); color: white;
-  font-size: 10px; padding: 3px 6px; border-radius: 4px;
-  white-space: nowrap; pointer-events: none; display: none;
-}
-.bar:hover .bar-tooltip { display: block; }
+.section-sub { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; }
 
 /* CALENDAR */
-.cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px; margin-bottom: 12px;
+.calendar-grid {
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
 }
-.cal-day-header {
-  font-size: 10px; text-align: center; color: var(--muted);
-  font-weight: 600; text-transform: uppercase;
-  letter-spacing: 0.06em; padding: 4px 0;
+.cal-header {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  background: var(--charcoal);
 }
+.cal-day-label {
+  padding: 10px; text-align: center; font-size: 11px;
+  font-weight: 600; color: rgba(255,255,255,0.6);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.cal-month-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cal-nav-btn {
+  background: none; border: 1px solid var(--border);
+  border-radius: 6px; padding: 6px 12px; cursor: pointer;
+  font-size: 14px; color: var(--muted); transition: all 0.15s;
+}
+.cal-nav-btn:hover { background: var(--cream); color: var(--charcoal); }
+.cal-body { display: grid; grid-template-columns: repeat(7, 1fr); }
 .cal-cell {
-  aspect-ratio: 1; border-radius: 4px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; color: var(--muted);
-  cursor: default; background: transparent; position: relative;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  min-height: 90px; padding: 8px; position: relative;
 }
-.cal-cell.has-post {
-  background: var(--rose-pale); color: var(--rose);
-  font-weight: 600; cursor: pointer;
+.cal-cell:nth-child(7n) { border-right: none; }
+.cal-cell.empty { background: #FAFAF9; }
+.cal-cell.today { background: #FFF8F0; }
+.cal-date { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.cal-cell.today .cal-date {
+  background: var(--rose); color: white;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 11px;
 }
-.cal-cell.has-post:hover { background: var(--rose-light); }
-.cal-cell.today { outline: 2px solid var(--rose); outline-offset: -2px; }
-.cal-cell .dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--rose); position: absolute; bottom: 3px;
+.cal-post-chip {
+  background: var(--rose-pale); border: 1px solid var(--rose-light);
+  border-radius: 4px; padding: 3px 6px; font-size: 10px;
+  color: var(--rose); font-weight: 500; cursor: pointer;
+  margin-bottom: 2px; display: block;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  transition: background 0.15s;
 }
-.cal-legend {
-  display: flex; gap: 16px;
-  font-size: 11px; color: var(--muted); margin-top: 12px;
+.cal-post-chip:hover { background: var(--rose-light); }
+.cal-post-chip.views-high { background: var(--sage-light); border-color: #B8D4C4; color: var(--sage); }
+
+/* POST MODAL */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(28,25,23,0.6); z-index: 1000;
+  backdrop-filter: blur(4px); align-items: center; justify-content: center;
 }
-.legend-dot {
-  width: 10px; height: 10px; border-radius: 2px;
-  display: inline-block; margin-right: 4px; vertical-align: middle;
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--warm-white); border-radius: 16px;
+  width: 580px; max-height: 80vh; overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.25);
 }
+.modal-header {
+  padding: 24px 28px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+}
+.modal-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--charcoal); line-height: 1.3; flex: 1; }
+.modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); padding: 0; flex-shrink: 0; }
+.modal-body { padding: 20px 28px 28px; }
+.modal-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.modal-tag { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; }
+.tag-done { background: var(--sage-light); color: var(--sage); }
+.tag-draft { background: var(--lav-light); color: var(--lavender); }
+.tag-editing { background: var(--amber-light); color: var(--amber); }
+.modal-caption { font-size: 13px; color: var(--ink); line-height: 1.7; margin-bottom: 20px; max-height: 120px; overflow-y: auto; padding: 12px; background: var(--cream); border-radius: 8px; border: 1px solid var(--border); }
+.modal-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+.modal-metric { background: var(--cream); border-radius: 8px; padding: 12px; text-align: center; }
+.modal-metric-val { font-size: 20px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--charcoal); letter-spacing: -0.02em; }
+.modal-metric-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 2px; }
+.modal-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--rose); text-decoration: none; font-weight: 500; padding: 8px 14px; border: 1px solid var(--rose-light); border-radius: 6px; transition: background 0.15s; }
+.modal-link:hover { background: var(--rose-pale); }
+
+/* GRAPH */
+.graph-container {
+  background: var(--warm-white); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; margin-bottom: 24px;
+}
+.graph-header {
+  padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.graph-legend { display: flex; gap: 20px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+.graph-body { padding: 24px; }
+.chart-area { position: relative; }
 
 /* WEEKLY TABLE */
 .weekly-table {
-  width: 100%; border-collapse: collapse; font-size: 13px;
+  background: var(--warm-white); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
 }
+.weekly-table table { width: 100%; border-collapse: collapse; }
 .weekly-table th {
-  text-align: left; font-size: 10px; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--muted); font-weight: 600;
-  padding: 8px 12px; border-bottom: 1px solid var(--border);
+  padding: 12px 16px; text-align: left; font-size: 11px;
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); background: var(--cream); border-bottom: 1px solid var(--border);
 }
 .weekly-table td {
-  padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle;
+  padding: 12px 16px; font-size: 13px;
+  border-bottom: 1px solid var(--border); vertical-align: middle;
 }
 .weekly-table tr:last-child td { border-bottom: none; }
-.weekly-table tr:hover td { background: var(--rose-pale); }
-.td-week { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); white-space: nowrap; }
-.td-followers { font-family: 'DM Mono', monospace; font-weight: 600; white-space: nowrap; }
-.td-net { font-family: 'DM Mono', monospace; font-weight: 600; color: var(--sage); }
-.td-net.neg { color: var(--rose); }
-.td-reach { font-family: 'DM Mono', monospace; color: var(--muted); }
-.td-visits { font-family: 'DM Mono', monospace; color: var(--muted); }
-.td-post { font-size: 12px; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.td-notes { font-size: 11px; color: var(--muted); font-style: italic; }
-.badge-now {
-  display: inline-block; background: var(--rose-pale); color: var(--rose);
-  font-size: 9px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.06em; padding: 2px 6px; border-radius: 10px; margin-left: 6px;
-}
+.weekly-table tr:hover td { background: var(--cream); }
+.weekly-bar-cell { width: 160px; }
+.weekly-bar-bg { background: var(--border); border-radius: 4px; height: 8px; overflow: hidden; }
+.weekly-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--rose), var(--lavender)); transition: width 0.8s ease; }
 
-/* TOP PERFORMERS */
-.performers-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+/* PERFORMANCE TABLE */
+.perf-table-wrap {
+  background: var(--warm-white); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
 }
-.perf-card {
-  background: var(--warm-white);
-  border: 1px solid var(--border);
-  border-radius: 10px; padding: 18px;
+.perf-filters {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; gap: 8px; flex-wrap: wrap;
 }
-.perf-rank {
-  font-size: 11px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px;
+.filter-btn {
+  padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+  background: none; font-size: 12px; font-weight: 500; color: var(--muted);
+  cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
 }
-.perf-rank.gold { color: var(--gold); }
-.perf-rank.silver { color: #8A8A8A; }
-.perf-rank.bronze { color: var(--amber); }
-.perf-title {
-  font-size: 14px; font-weight: 600; color: var(--charcoal);
-  line-height: 1.3; margin-bottom: 12px;
+.filter-btn:hover, .filter-btn.active { background: var(--charcoal); border-color: var(--charcoal); color: white; }
+.perf-table { width: 100%; border-collapse: collapse; }
+.perf-table th {
+  padding: 12px 14px; text-align: left; font-size: 11px;
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--muted); background: var(--cream); border-bottom: 1px solid var(--border);
+  cursor: pointer; white-space: nowrap; user-select: none;
 }
-.perf-stat {
-  display: flex; justify-content: space-between;
-  font-size: 11px; color: var(--muted);
-  padding: 4px 0; border-bottom: 1px solid var(--border);
-}
-.perf-stat:last-of-type { border: none; }
-.perf-stat-val {
-  font-family: 'DM Mono', monospace;
-  font-weight: 600; color: var(--charcoal);
-}
-.perf-date { font-size: 10px; color: var(--muted); margin-top: 10px; }
-.perf-tag {
-  display: inline-block; font-size: 9px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  padding: 2px 7px; border-radius: 10px; margin-top: 8px;
-}
-.tag-reel { background: var(--rose-pale); color: var(--rose); }
-.tag-viral { background: var(--amber-light); color: var(--amber); }
-.tag-post { background: var(--lav-light); color: var(--lavender); }
+.perf-table th:hover { color: var(--charcoal); }
+.sort-arrow { margin-left: 4px; opacity: 0.4; }
+.sort-arrow.active { opacity: 1; color: var(--rose); }
+.perf-table td { padding: 12px 14px; font-size: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.perf-table tr:last-child td { border-bottom: none; }
+.perf-table tr:hover td { background: var(--rose-pale); cursor: pointer; }
 
-.section-label {
-  font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
-  color: var(--muted); font-weight: 600; margin-bottom: 14px; margin-top: 28px;
+.tier-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px;
 }
-.section-label:first-child { margin-top: 0; }
-.section-title {
+.tier-viral { background: var(--rose-pale); color: var(--rose); border: 1px solid var(--rose-light); }
+.tier-strong { background: var(--sage-light); color: var(--sage); border: 1px solid #B8D4C4; }
+.tier-avg { background: var(--lav-light); color: var(--lavender); border: 1px solid #D0C8E0; }
+.tier-low { background: var(--cream); color: var(--muted); border: 1px solid var(--border); }
+
+.er-badge { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
+.er-hot { background: #FFF0E8; color: var(--amber); }
+.er-good { background: var(--sage-light); color: var(--sage); }
+.er-ok { background: var(--lav-light); color: var(--lavender); }
+.er-low { color: var(--muted); }
+
+.rank-num { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: var(--muted); width: 24px; text-align: center; }
+.rank-num.top3 { color: var(--gold); }
+.post-name-cell { max-width: 260px; }
+.post-name { font-size: 12px; font-weight: 500; color: var(--charcoal); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.post-date-small { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
+.num-cell { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; text-align: right; }
+
+/* CONTENT THEMES */
+.themes-header {
   font-family: 'Playfair Display', serif;
-  font-size: 15px; font-weight: 700; margin-bottom: 16px;
-  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 20px; color: var(--charcoal); font-weight: 400;
+  margin-top: 36px; margin-bottom: 16px;
+  padding-top: 28px; border-top: 1px solid var(--border);
 }
-.section-sub {
-  font-size: 11px; color: var(--muted);
-  font-family: 'DM Sans', sans-serif; font-weight: 400;
+.themes-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
 }
+.theme-card {
+  background: var(--warm-white); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+}
+.theme-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px; font-weight: 700; margin-bottom: 10px;
+}
+.theme-body { font-size: 13px; line-height: 1.7; color: var(--muted); }
+
+/* MISC */
+.views-mega { color: var(--rose); }
+.views-high { color: var(--sage); }
+.views-mid { color: var(--amber); }
+.views-low { color: var(--muted); }
+.pillar-chip { font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+.pillar-vulnerable { background: var(--rose-pale); color: var(--rose); }
+.pillar-lifestyle { background: var(--sage-light); color: var(--sage); }
+.pillar-happy { background: var(--amber-light); color: var(--amber); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
-<header class="header">
+<div class="header">
   <div class="header-left">
     <div class="avatar">J</div>
     <div>
       <div class="header-title">jojo.thrives</div>
-      <div class="header-sub">● IG Control Room</div>
+      <div class="header-sub"><span class="live-dot"></span>IG Control Room</div>
     </div>
   </div>
   <div class="header-stats">
@@ -372,475 +392,614 @@ body {
       <div class="h-stat-label">Posts</div>
     </div>
   </div>
-</header>
+</div>
 
-<!-- TABS — Posts Board removed -->
-<nav class="tab-bar">
-  <button class="tab-btn active" onclick="showTab('overview', this)">📊 Overview</button>
-  <button class="tab-btn" onclick="showTab('calendar', this)">🗓️ Posting Calendar</button>
-  <button class="tab-btn" onclick="showTab('growth', this)">📈 Follower Growth</button>
-  <button class="tab-btn" onclick="showTab('top', this)">🏆 Top Performers</button>
-</nav>
+<!-- NAV — Posts Board removed -->
+<div class="nav">
+  <div class="nav-tab active" onclick="showSection('overview', this)">📊 Overview</div>
+  <div class="nav-tab" onclick="showSection('calendar', this)">📅 Posting Calendar</div>
+  <div class="nav-tab" onclick="showSection('growth', this)">📈 Follower Growth</div>
+  <div class="nav-tab" onclick="showSection('top', this)">🏆 Top Performers</div>
+</div>
 
-<!-- ===== OVERVIEW ===== -->
-<div id="overview" class="tab-content active">
-  <div class="cards-row">
-    <div class="card">
-      <div class="card-icon">👥</div>
-      <div class="card-value">20.5K</div>
-      <div class="card-label">Followers</div>
-      <div class="card-sub"><span>+2K</span> since Dec 2025</div>
+<div class="main">
+
+<!-- ======= OVERVIEW ======= -->
+<div id="section-overview" class="section active">
+  <div class="metrics-row">
+    <div class="metric-card rose">
+      <div class="metric-icon">👥</div>
+      <div class="metric-value">20.5K</div>
+      <div class="metric-label">Followers</div>
+      <div class="metric-delta delta-up">↑ +2K since Dec 2025</div>
     </div>
-    <div class="card">
-      <div class="card-icon">👁️</div>
-      <div class="card-value">2.8M</div>
-      <div class="card-label">Total Views (90d)</div>
-      <div class="card-sub"><span>198K</span> top reel</div>
+    <div class="metric-card sage">
+      <div class="metric-icon">👁</div>
+      <div class="metric-value">2.8M</div>
+      <div class="metric-label">Total Views</div>
+      <div class="metric-delta delta-up">↑ 198K top reel</div>
     </div>
-    <div class="card">
-      <div class="card-icon">❤️</div>
-      <div class="card-value">85.5K</div>
-      <div class="card-label">Total Interactions</div>
-      <div class="card-sub">Best: <span>32.8K</span> likes</div>
+    <div class="metric-card amber">
+      <div class="metric-icon">❤️</div>
+      <div class="metric-value">85.5K</div>
+      <div class="metric-label">Total Interactions</div>
+      <div class="metric-delta delta-up">↑ 32.8K top post likes</div>
     </div>
-    <div class="card">
-      <div class="card-icon">💬</div>
-      <div class="card-value">1.4%</div>
-      <div class="card-label">Avg Eng. Rate</div>
-      <div class="card-sub">Reach: <span>1.14M</span></div>
+    <div class="metric-card lav">
+      <div class="metric-icon">💬</div>
+      <div class="metric-value">1.4%</div>
+      <div class="metric-label">Avg Eng. Rate</div>
+      <div class="metric-delta delta-note">Best: 4.11%</div>
     </div>
-    <div class="card">
-      <div class="card-icon">📌</div>
-      <div class="card-value">42</div>
-      <div class="card-label">Total Posts</div>
-      <div class="card-sub">Since <span>Dec 2025</span></div>
+    <div class="metric-card gold">
+      <div class="metric-icon">📌</div>
+      <div class="metric-value">42</div>
+      <div class="metric-label">Total Posts</div>
+      <div class="metric-delta delta-note">Since Dec 2025</div>
     </div>
   </div>
 
-  <div class="two-col">
-    <div class="panel">
-      <div class="panel-title-row">
-        <div class="panel-title">Top 5 Posts</div>
-        <div class="panel-sub">by likes</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+    <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'Playfair Display',serif;font-size:16px;">Top 5 Posts</span>
+        <span style="font-size:11px;color:var(--muted);">by likes</span>
       </div>
-      <ul class="top-list">
-        <li>
-          <div class="rank">1</div>
-          <div class="post-info">
-            <div class="post-title">2023: I got cheated on by my husband</div>
-            <div class="post-date">Mar 21, 2026</div>
-          </div>
-          <div class="post-views">32.8K</div>
-        </li>
-        <li>
-          <div class="rank">2</div>
-          <div class="post-info">
-            <div class="post-title">You'd never know — when my marriage was falling apart</div>
-            <div class="post-date">Mar 9, 2026</div>
-          </div>
-          <div class="post-views">6.9K</div>
-        </li>
-        <li>
-          <div class="rank">3</div>
-          <div class="post-info">
-            <div class="post-title">Things no one talks about when you're a single mom</div>
-            <div class="post-date">Feb 17, 2026</div>
-          </div>
-          <div class="post-views">2.6K</div>
-        </li>
-        <li>
-          <div class="rank">4</div>
-          <div class="post-info">
-            <div class="post-title">Sometimes you just gotta say what a f*ckin loser &amp; move on</div>
-            <div class="post-date">Apr 26, 2026</div>
-          </div>
-          <div class="post-views">1.3K</div>
-        </li>
-        <li>
-          <div class="rank">5</div>
-          <div class="post-info">
-            <div class="post-title">Starting over at 36</div>
-            <div class="post-date">Dec 9, 2025</div>
-          </div>
-          <div class="post-views">1.1K</div>
-        </li>
-      </ul>
+      <div style="padding:8px 0;"><div id="mini-top-posts"></div></div>
     </div>
-
-    <div class="panel">
-      <div class="panel-title">Content Insights (Last 90 Days)</div>
-      <div class="insight-item bg-rose-pale">
-        <span>Accounts reached</span>
-        <span class="insight-val col-rose">1,143,868</span>
+    <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border);">
+        <span style="font-family:'Playfair Display',serif;font-size:16px;">Content Insights</span>
       </div>
-      <div class="insight-item bg-sage-light">
-        <span>Profile visits</span>
-        <span class="insight-val col-sage">124,167</span>
-      </div>
-      <div class="insight-item bg-amber-light">
-        <span>Accounts engaged</span>
-        <span class="insight-val col-amber">64,385</span>
-      </div>
-      <div class="insight-item bg-lav-light">
-        <span>External link taps</span>
-        <span class="insight-val col-lav">513</span>
-      </div>
-      <div class="insight-item bg-rose-pale">
-        <span>Reels % of all views</span>
-        <span class="insight-val col-rose">95.1%</span>
-      </div>
-      <div class="insight-item bg-sage-light">
-        <span>Posts with 1K+ likes</span>
-        <span class="insight-val col-sage">4</span>
-      </div>
+      <div style="padding:20px;"><div id="insights-content"></div></div>
     </div>
   </div>
 
-  <div class="panel-full">
-    <div class="section-title">
-      Follower Growth — Last 10 Weeks
-      <span class="section-sub">● Weekly new followers (estimated from trajectory)</span>
+  <div class="graph-container">
+    <div class="graph-header">
+      <span style="font-family:'Playfair Display',serif;font-size:16px;">Follower Growth — Last 10 Weeks</span>
+      <div class="graph-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Weekly followers gained</div>
+      </div>
     </div>
-    <div class="chart-wrap" id="growthChart"></div>
+    <div class="graph-body">
+      <div class="chart-area" style="height:180px;">
+        <canvas id="overview-chart" width="800" height="180"></canvas>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ===== POSTING CALENDAR ===== -->
-<div id="calendar" class="tab-content">
-  <div class="two-col">
-    <div class="panel">
-      <div class="panel-title">April 2026</div>
-      <div class="cal-grid" id="aprilCal"></div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">March 2026</div>
-      <div class="cal-grid" id="marchCal"></div>
-    </div>
+<!-- ======= CALENDAR ======= -->
+<div id="section-calendar" class="section">
+  <div class="section-header">
+    <span class="section-title">Posting Calendar</span>
+    <span class="section-sub">Click any post to see details</span>
   </div>
-  <div class="two-col">
-    <div class="panel">
-      <div class="panel-title">February 2026</div>
-      <div class="cal-grid" id="febCal"></div>
+  <div class="calendar-grid">
+    <div class="cal-month-header">
+      <button class="cal-nav-btn" onclick="changeMonth(-1)">← Prev</button>
+      <span id="cal-month-label" style="font-family:'Playfair Display',serif;font-size:20px;"></span>
+      <button class="cal-nav-btn" onclick="changeMonth(1)">Next →</button>
     </div>
-    <div class="panel">
-      <div class="panel-title">Earlier Posts</div>
-      <p style="font-size:13px; line-height:1.9; color:var(--muted);">
-        <strong style="color:var(--charcoal)">Dec 9, 2025</strong> — Starting over at 36<br>
-        <span style="font-size:11px;">Account launched Dec 2025. First post set the tone for the whole journey.</span>
-      </p>
+    <div class="cal-header">
+      <div class="cal-day-label">Sun</div>
+      <div class="cal-day-label">Mon</div>
+      <div class="cal-day-label">Tue</div>
+      <div class="cal-day-label">Wed</div>
+      <div class="cal-day-label">Thu</div>
+      <div class="cal-day-label">Fri</div>
+      <div class="cal-day-label">Sat</div>
     </div>
-  </div>
-  <div class="cal-legend">
-    <span><span class="legend-dot" style="background:var(--rose-pale); border:1px solid var(--rose-light);"></span>Post published</span>
-    <span style="font-size:11px; color:var(--muted); font-style:italic;">Dates from IG Sorter overlay on main grid</span>
+    <div class="cal-body" id="cal-body"></div>
   </div>
 </div>
 
-<!-- ===== FOLLOWER GROWTH / WEEKLY TRACKER ===== -->
-<div id="growth" class="tab-content">
-  <div class="panel-full">
-    <div class="section-title">
-      Weekly Performance Tracker
-      <span class="section-sub">Scraped Apr 29, 2026 · Instagram Insights (90-day window)</span>
+<!-- ======= GROWTH ======= -->
+<div id="section-growth" class="section">
+  <div class="section-header">
+    <span class="section-title">Follower Growth</span>
+    <span class="section-sub">Last 10 weeks · scraped Apr 29, 2026</span>
+  </div>
+  <div class="graph-container" style="margin-bottom:24px;">
+    <div class="graph-header">
+      <span style="font-family:'Playfair Display',serif;font-size:16px;">Weekly Follower Gain</span>
+      <div class="graph-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>New followers</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--lavender)"></div>Cumulative</div>
+      </div>
     </div>
-    <table class="weekly-table">
+    <div class="graph-body">
+      <div class="chart-area" style="height:240px;">
+        <canvas id="growth-chart" width="900" height="240"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="weekly-table">
+    <table>
       <thead>
         <tr>
           <th>Week (Sun–Sat)</th>
-          <th>Total Followers</th>
-          <th>Net New</th>
-          <th>Reach</th>
-          <th>Profile Visits</th>
-          <th>Top Post</th>
+          <th>New Followers</th>
+          <th>Growth</th>
+          <th>Total (est.)</th>
+          <th>Top Post That Week</th>
           <th>Notes</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td class="td-week">Apr 27–29 (cur)</td>
-          <td class="td-followers">20,505 <span class="badge-now">now</span></td>
-          <td class="td-net">—</td>
-          <td class="td-reach">—</td>
-          <td class="td-visits">—</td>
-          <td class="td-post">Healing from Betrayal Trauma</td>
-          <td class="td-notes">New betrayal trauma arc dropping 🔥</td>
-        </tr>
-        <tr>
-          <td class="td-week">Apr 20–26</td>
-          <td class="td-followers">~20,000</td>
-          <td class="td-net">+~500</td>
-          <td class="td-reach">—</td>
-          <td class="td-visits">—</td>
-          <td class="td-post">Sometimes you just gotta say what a f*ckin loser</td>
-          <td class="td-notes">1.3K likes on Apr 26; 3 posts Apr 19</td>
-        </tr>
-        <tr>
-          <td class="td-week">Apr 13–19</td>
-          <td class="td-followers">~19,500</td>
-          <td class="td-net">+~400</td>
-          <td class="td-reach">—</td>
-          <td class="td-visits">—</td>
-          <td class="td-post">Flirting w/ other women in front of your pregnant wife</td>
-          <td class="td-notes">Betrayal content starting to pick up</td>
-        </tr>
-        <tr>
-          <td class="td-week">Apr 6–12</td>
-          <td class="td-followers">~19,100</td>
-          <td class="td-net">+~300</td>
-          <td class="td-reach">—</td>
-          <td class="td-visits">—</td>
-          <td class="td-post">Most women will do almost anything to keep family together</td>
-          <td class="td-notes">662 likes; quiet growth week</td>
-        </tr>
-        <tr>
-          <td class="td-week">Mar 29–Apr 5</td>
-          <td class="td-followers">~18,800</td>
-          <td class="td-net">+~400</td>
-          <td class="td-reach">—</td>
-          <td class="td-visits">—</td>
-          <td class="td-post">When my phone brings up a slideshow of my kids as babies</td>
-          <td class="td-notes">Coparenting + postpartum grief content</td>
-        </tr>
-        <tr>
-          <td class="td-week">Mar 22–28</td>
-          <td class="td-followers">~18,400</td>
-          <td class="td-net">+~1,500</td>
-          <td class="td-reach">—</td>
-          <td class="td-visits">—</td>
-          <td class="td-post">2023: I got cheated on by my husband 🔥</td>
-          <td class="td-notes">VIRAL — 32.8K likes, 198K+ views. Biggest week ever.</td>
-        </tr>
-        <tr>
-          <td class="td-week">Mar 15–21</td>
-          <td class="td-followers">~16,900</td>
-          <td class="td-net">+~600</td>
-          <td class="td-reach">—</td>
-          <td class="td-visits">—</td>
-          <td class="td-post">Things I love deeply about being a single mom</td>
-          <td class="td-notes"></td>
-        </tr>
-        <tr>
-          <td class="td-week">Mar 8–14</td>
-          <td class="td-followers">~16,300</td>
-          <td class="td-net">+~1,200</td>
-          <td class="td-reach">—</td>
-          <td class="td-visits">—</td>
-          <td class="td-post">You'd never know — when my marriage was falling apart 🔥</td>
-          <td class="td-notes">6.9K likes — #2 all-time post</td>
-        </tr>
-        <tr>
-          <td class="td-week">Mar 1–7</td>
-          <td class="td-followers">~15,100</td>
-          <td class="td-net">+~800</td>
-          <td class="td-reach">—</td>
-          <td class="td-visits">—</td>
-          <td class="td-post">Are you in your single mom era?</td>
-          <td class="td-notes">High posting week (3 posts)</td>
-        </tr>
-        <tr>
-          <td class="td-week">Feb 22–28</td>
-          <td class="td-followers">~14,300</td>
-          <td class="td-net">+~700</td>
-          <td class="td-reach">—</td>
-          <td class="td-visits">—</td>
-          <td class="td-post">I'm too scared to get a divorce</td>
-          <td class="td-notes"></td>
-        </tr>
-        <tr>
-          <td class="td-week">Feb 15–21</td>
-          <td class="td-followers">~13,600</td>
-          <td class="td-net">+~500</td>
-          <td class="td-reach">—</td>
-          <td class="td-visits">—</td>
-          <td class="td-post">Things no one talks about when you're a single mom</td>
-          <td class="td-notes">2.6K likes; relatable POV hook working</td>
-        </tr>
-      </tbody>
+      <tbody id="growth-table-body"></tbody>
     </table>
-    <p style="font-size:11px; color:var(--muted); margin-top:16px; font-style:italic;">
-      * Reach &amp; Profile Visits: fill in from Instagram app → Insights → tap each weekly bar in the Followers chart.<br>
-      * Net new follower figures are estimated from growth trajectory; exact numbers available in app Insights only.
-    </p>
+  </div>
+  <p style="font-size:11px;color:var(--muted);margin-top:12px;font-style:italic;">* Net new follower figures estimated from growth trajectory. Exact weekly numbers available in Instagram app → Insights → Followers chart (tap each bar).</p>
+</div>
+
+<!-- ======= TOP PERFORMERS ======= -->
+<div id="section-top" class="section">
+  <div class="section-header">
+    <span class="section-title">Top Performers</span>
+    <span class="section-sub">All published posts · sortable · click to open · scraped Apr 29, 2026</span>
+  </div>
+  <div class="perf-table-wrap">
+    <div class="perf-filters">
+      <button class="filter-btn active" onclick="filterPosts('all', this)">All Posts</button>
+      <button class="filter-btn" onclick="filterPosts('viral', this)">⚡ Viral (100K+ views)</button>
+      <button class="filter-btn" onclick="filterPosts('strong', this)">💚 Strong (20K+ views)</button>
+      <button class="filter-btn" onclick="filterPosts('er', this)">📊 High ER (3%+)</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="perf-table" id="perf-table">
+        <thead>
+          <tr>
+            <th style="width:40px;">#</th>
+            <th onclick="sortTable('title')">Post <span class="sort-arrow">↕</span></th>
+            <th onclick="sortTable('views')" style="text-align:right;">Views <span class="sort-arrow active" id="sort-views">↓</span></th>
+            <th onclick="sortTable('likes')" style="text-align:right;">Likes <span class="sort-arrow" id="sort-likes">↕</span></th>
+            <th onclick="sortTable('comments')" style="text-align:right;">Comments <span class="sort-arrow" id="sort-comments">↕</span></th>
+            <th onclick="sortTable('er')" style="text-align:right;">ER% <span class="sort-arrow" id="sort-er">↕</span></th>
+            <th>Tier</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="perf-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CONTENT THEMES — added at bottom of Top Performers -->
+  <div class="themes-header">💡 Content Themes — What's Working</div>
+  <div class="themes-grid">
+    <div class="theme-card">
+      <div class="theme-title" style="color:var(--rose);">🔥 Betrayal Trauma</div>
+      <div class="theme-body">Your #1 and #2 all-time posts are raw betrayal content. The "cheated on" reel has 32.8K likes and drove ~1,500 new followers in a single week. No one in the mom creator space goes here with this level of honesty. This is your deepest differentiator — lean in hard.</div>
+    </div>
+    <div class="theme-card">
+      <div class="theme-title" style="color:var(--sage);">💪 Single Mom Identity</div>
+      <div class="theme-body">POV and identity hooks ("single mom era," "starting over at 36," "I'm scared to get a divorce") perform consistently. Your audience isn't just watching — they're seeing themselves. You speak their inner monologue before they've found words for it.</div>
+    </div>
+    <div class="theme-card">
+      <div class="theme-title" style="color:var(--amber);">🌏 Abroad + Reinvention</div>
+      <div class="theme-body">The Hong Kong / Asia life thread adds aspiration to the pain. "Moved abroad to rebuild" draws curiosity and sets you apart from every other mom creator. It signals that healing doesn't just mean surviving — it means building something genuinely beautiful on the other side.</div>
+    </div>
   </div>
 </div>
 
-<!-- ===== TOP PERFORMERS ===== -->
-<div id="top" class="tab-content">
-  <div class="section-label">🏆 All-Time Top Posts · Ranked by Likes · Scraped Apr 29, 2026</div>
-  <div class="performers-grid">
+</div><!-- end main -->
 
-    <div class="perf-card">
-      <div class="perf-rank gold">🥇 #1 All Time</div>
-      <div class="perf-title">2023: I got cheated on by my husband</div>
-      <div class="perf-stat"><span>Likes</span><span class="perf-stat-val">32,766</span></div>
-      <div class="perf-stat"><span>Comments</span><span class="perf-stat-val">359</span></div>
-      <div class="perf-stat"><span>Views (from Insights)</span><span class="perf-stat-val">198K</span></div>
-      <div class="perf-date">Mar 21, 2026</div>
-      <span class="perf-tag tag-viral">🔥 Viral Reel</span>
+<!-- POST MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <button class="modal-close" onclick="closeModalBtn()">✕</button>
     </div>
-
-    <div class="perf-card">
-      <div class="perf-rank silver">🥈 #2 All Time</div>
-      <div class="perf-title">You'd never know — when my marriage was falling apart</div>
-      <div class="perf-stat"><span>Likes</span><span class="perf-stat-val">6,860</span></div>
-      <div class="perf-stat"><span>Comments</span><span class="perf-stat-val">115</span></div>
-      <div class="perf-stat"><span>Views (est.)</span><span class="perf-stat-val">~80K</span></div>
-      <div class="perf-date">Mar 9, 2026</div>
-      <span class="perf-tag tag-reel">Reel</span>
-    </div>
-
-    <div class="perf-card">
-      <div class="perf-rank bronze">🥉 #3</div>
-      <div class="perf-title">Things no one talks about when you're a single mom</div>
-      <div class="perf-stat"><span>Likes</span><span class="perf-stat-val">2,638</span></div>
-      <div class="perf-stat"><span>Comments</span><span class="perf-stat-val">87</span></div>
-      <div class="perf-stat"><span>Views (from Insights)</span><span class="perf-stat-val">161K</span></div>
-      <div class="perf-date">Feb 17, 2026</div>
-      <span class="perf-tag tag-reel">Reel</span>
-    </div>
-
-    <div class="perf-card">
-      <div class="perf-rank">#4</div>
-      <div class="perf-title">Sometimes you just gotta say what a f*ckin loser &amp; move on</div>
-      <div class="perf-stat"><span>Likes</span><span class="perf-stat-val">1,277</span></div>
-      <div class="perf-stat"><span>Comments</span><span class="perf-stat-val">46</span></div>
-      <div class="perf-stat"><span>Views (from Insights)</span><span class="perf-stat-val">42K</span></div>
-      <div class="perf-date">Apr 26, 2026</div>
-      <span class="perf-tag tag-reel">Reel</span>
-    </div>
-
-    <div class="perf-card">
-      <div class="perf-rank">#5</div>
-      <div class="perf-title">Coparenting after divorce</div>
-      <div class="perf-stat"><span>Likes</span><span class="perf-stat-val">1,296</span></div>
-      <div class="perf-stat"><span>Comments</span><span class="perf-stat-val">101</span></div>
-      <div class="perf-stat"><span>Views (est.)</span><span class="perf-stat-val">~25K</span></div>
-      <div class="perf-date">Mar 27, 2026</div>
-      <span class="perf-tag tag-reel">Reel</span>
-    </div>
-
-    <div class="perf-card">
-      <div class="perf-rank">#6</div>
-      <div class="perf-title">Starting over at 36</div>
-      <div class="perf-stat"><span>Likes</span><span class="perf-stat-val">1,099</span></div>
-      <div class="perf-stat"><span>Comments</span><span class="perf-stat-val">147</span></div>
-      <div class="perf-stat"><span>Views (est.)</span><span class="perf-stat-val">~20K</span></div>
-      <div class="perf-date">Dec 9, 2025</div>
-      <span class="perf-tag tag-post">Post</span>
-    </div>
-
-    <div class="perf-card">
-      <div class="perf-rank">#7</div>
-      <div class="perf-title">Healing from Betrayal Trauma (raising newborn + toddler)</div>
-      <div class="perf-stat"><span>Likes</span><span class="perf-stat-val">195</span></div>
-      <div class="perf-stat"><span>Comments</span><span class="perf-stat-val">13</span></div>
-      <div class="perf-stat"><span>Views (from Insights)</span><span class="perf-stat-val">37.1K</span></div>
-      <div class="perf-date">Apr 27, 2026</div>
-      <span class="perf-tag tag-reel">Reel · New 🆕</span>
-    </div>
-
-    <div class="perf-card">
-      <div class="perf-rank">#8</div>
-      <div class="perf-title">I just do it. (city night walk)</div>
-      <div class="perf-stat"><span>Likes</span><span class="perf-stat-val">688</span></div>
-      <div class="perf-stat"><span>Comments</span><span class="perf-stat-val">15</span></div>
-      <div class="perf-stat"><span>Views (from Insights)</span><span class="perf-stat-val">32.3K</span></div>
-      <div class="perf-date">Apr 25, 2026</div>
-      <span class="perf-tag tag-reel">Reel · New 🆕</span>
-    </div>
-
-    <div class="perf-card">
-      <div class="perf-rank">#9</div>
-      <div class="perf-title">Most women will do almost anything to keep family together</div>
-      <div class="perf-stat"><span>Likes</span><span class="perf-stat-val">662</span></div>
-      <div class="perf-stat"><span>Comments</span><span class="perf-stat-val">27</span></div>
-      <div class="perf-stat"><span>Views (est.)</span><span class="perf-stat-val">~12K</span></div>
-      <div class="perf-date">Apr 12, 2026</div>
-      <span class="perf-tag tag-reel">Reel</span>
-    </div>
-
-  </div>
-
-  <div class="section-label" style="margin-top:32px;">💡 Content Themes — What's Working</div>
-  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
-    <div class="panel">
-      <div class="panel-title" style="color:var(--rose);">🔥 Betrayal Trauma</div>
-      <p style="font-size:13px; line-height:1.7; color:var(--muted);">Your #1 and #2 all-time posts are raw betrayal content. The "cheated on" reel alone drove ~1,500 followers in one week. This is your superpower — lean all the way in.</p>
-    </div>
-    <div class="panel">
-      <div class="panel-title" style="color:var(--sage);">💪 Single Mom Identity</div>
-      <p style="font-size:13px; line-height:1.7; color:var(--muted);">POV/identity hooks ("single mom era," "starting over at 36") perform consistently. Your audience is women rebuilding their entire identity from scratch — you speak their inner monologue.</p>
-    </div>
-    <div class="panel">
-      <div class="panel-title" style="color:var(--amber);">🌏 Abroad + Reinvention</div>
-      <p style="font-size:13px; line-height:1.7; color:var(--muted);">The HK/Asia life thread adds aspiration to the pain. "Moved abroad to rebuild" draws curiosity + differentiates you from every other mom creator. It makes the healing feel possible.</p>
+    <div class="modal-body">
+      <div class="modal-meta" id="modal-meta"></div>
+      <div class="modal-caption" id="modal-caption"></div>
+      <div class="modal-metrics" id="modal-metrics"></div>
+      <div id="modal-link-wrap"></div>
     </div>
   </div>
 </div>
 
 <script>
-function showTab(id, btn) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
+// ============================================================
+// DATA — updated from IG scrape Apr 29, 2026
+// Covers Main Grid + Reels Grid (all 42 visible posts)
+// ============================================================
+const POSTS = [
+  {id:1,  title:"Healing from Betrayal Trauma (raising newborn + toddler)", caption:"Healing from betrayal trauma while raising a newborn and a toddler — this is the hardest thing I've ever done. But I'm doing it.", status:"Done", date:"2026-04-27", pillar:"Vulnerable Single Mom", views:37100, likes:195, comments:13, er:0.98, link:""},
+  {id:2,  title:"Sometimes you just gotta say what a f*ckin loser & move on", caption:"Sometimes you just gotta say what a f*ckin loser & move on with your life ✨", status:"Done", date:"2026-04-26", pillar:"Happily Single Mom", views:42000, likes:1277, comments:46, er:3.11, link:""},
+  {id:3,  title:"I just do it.", caption:"I just do it.", status:"Done", date:"2026-04-25", pillar:"Happily Single Mom", views:32300, likes:688, comments:15, er:1.72, link:""},
+  {id:4,  title:"4 years ago my marriage fell apart — 2 months postpartum", caption:"4 years ago my marriage fell apart. I was 2 months postpartum. Deep depression.\n\nToday I have so much self-love, peace, and joy in my life.\n\nPlease don't give up on yourself. Ever.", status:"Done", date:"2026-04-20", pillar:"Vulnerable Single Mom", views:0, likes:283, comments:8, er:0, link:""},
+  {id:5,  title:"Flirting with other women in front of your pregnant wife", caption:"Flirting with other women in front of your pregnant wife...", status:"Done", date:"2026-04-19", pillar:"Vulnerable Single Mom", views:0, likes:630, comments:69, er:3.41, link:""},
+  {id:6,  title:"Spotting Red Flags — Part 1", caption:"Spotting Red Flags — Part 1", status:"Done", date:"2026-04-19", pillar:"Vulnerable Single Mom", views:0, likes:460, comments:29, er:2.35, link:""},
+  {id:7,  title:'"You should be more discreet about your family affairs"', caption:'"You should be more discreet about your family affairs"', status:"Done", date:"2026-04-18", pillar:"Vulnerable Single Mom", views:8370, likes:349, comments:25, er:4.11, link:""},
+  {id:8,  title:"Speak up, even if your voice shakes", caption:"Speak up, even if your voice shakes.\n\nThree years ago, my therapist told me to share my story. It took a long time to feel ready.", status:"Done", date:"2026-04-17", pillar:"Vulnerable Single Mom", views:0, likes:57, comments:7, er:0, link:""},
+  {id:9,  title:"I wasn't always ok.", caption:"I wasn't always ok.", status:"Done", date:"2026-04-16", pillar:"Happily Single Mom", views:0, likes:412, comments:8, er:0, link:""},
+  {id:10, title:"Most women will do almost anything to keep family together", caption:"Most women will do almost anything to keep their family together. They stay, forgive, keep fighting for their partner even when it hurts.\n\nSo if a woman is dating or filing for divorce on her own, remember this: growing pain becomes even harder.", status:"Done", date:"2026-04-12", pillar:"Vulnerable Single Mom", views:0, likes:662, comments:27, er:0, link:""},
+  {id:11, title:"The 3 stages of Healing", caption:"The 3 stages of healing from betrayal trauma and divorce.", status:"Done", date:"2026-04-06", pillar:"Vulnerable Single Mom", views:14108, likes:211, comments:13, er:1.81, link:""},
+  {id:12, title:"That's the worst time to discover all of that pain", caption:"That's the worst time to discover all of that pain and suffering. Your mind and body are going through so much at that time.", status:"Done", date:"2026-04-04", pillar:"Vulnerable Single Mom", views:0, likes:96, comments:8, er:0, link:""},
+  {id:13, title:"When my phone brings up a slideshow of my kids as babies", caption:"When my phone brings up a slideshow of my kids when they were babies but I was stuck in survival mode 😔", status:"Done", date:"2026-03-31", pillar:"Vulnerable Single Mom", views:0, likes:361, comments:10, er:0, link:""},
+  {id:14, title:"Coparenting after divorce", caption:"Let's talk about coparenting after divorce.", status:"Done", date:"2026-03-27", pillar:"Happily Single Mom", views:90108, likes:1296, comments:101, er:1.84, link:""},
+  {id:15, title:'"That\'s unrealistic for a single mom"', caption:'"That\'s unrealistic for a single mom"', status:"Done", date:"2026-03-17", pillar:"Vulnerable Single Mom", views:0, likes:293, comments:20, er:0, link:""},
+  {id:16, title:"Things I love deeply about being a single mom", caption:"Things I love deeply about being a single mom (no one talks about this).", status:"Done", date:"2026-03-15", pillar:"Happily Single Mom", views:77162, likes:679, comments:24, er:0, link:""},
+  {id:17, title:"Shifting out of victim mentality as a single mom", caption:"Shifting out of victim mentality as a single mom.", status:"Done", date:"2026-03-14", pillar:"Happily Single Mom", views:42370, likes:375, comments:18, er:1.05, link:""},
+  {id:18, title:"You'd never know — when my marriage was falling apart", caption:"You'd never know, but this was when my marriage was falling apart.", status:"Done", date:"2026-03-09", pillar:"Vulnerable Single Mom", views:80000, likes:6860, comments:115, er:1.07, link:""},
+  {id:19, title:"What they don't tell you about moving to HK in your 30s", caption:"What they don't tell you about moving to Hong Kong with kids in your 30s...", status:"Done", date:"2026-03-06", pillar:"Lifestyle", views:125242, likes:609, comments:28, er:0.57, link:""},
+  {id:20, title:"Are you in your single mom era?", caption:"Are you in your single mom era?", status:"Done", date:"2026-03-04", pillar:"Happily Single Mom", views:53792, likes:511, comments:18, er:1.08, link:""},
+  {id:21, title:"Aren't you scared of becoming a single mom?", caption:"Aren't you scared of becoming a single mom?", status:"Done", date:"2026-03-01", pillar:"Vulnerable Single Mom", views:54655, likes:717, comments:13, er:1.41, link:""},
+  {id:22, title:"I'm overwhelmed carrying the burden of an entire family", caption:'"I\'m so overwhelmed carrying the burden of an entire family."', status:"Done", date:"2026-02-26", pillar:"Vulnerable Single Mom", views:47559, likes:166, comments:16, er:1.01, link:""},
+  {id:23, title:"Plan A — Married by 29, Kid #1 by 31, Kid #2 by 34", caption:"Plan A: Married by 29. Kid #1 by 31. Kid #2 by 34.", status:"Done", date:"2026-02-25", pillar:"Vulnerable Single Mom", views:79825, likes:590, comments:12, er:0.80, link:""},
+  {id:24, title:'"I\'m too scared to get a divorce"', caption:'"I\'m too scared to get a divorce"', status:"Done", date:"2026-02-23", pillar:"Vulnerable Single Mom", views:34480, likes:403, comments:11, er:1.29, link:""},
+  {id:25, title:"I moved abroad because I outgrew the life I was told to want", caption:"I moved abroad because I outgrew the life I was told to want.", status:"Done", date:"2026-02-20", pillar:"Lifestyle", views:77162, likes:284, comments:10, er:0.42, link:""},
+  {id:26, title:"I'm grateful to be a single mom", caption:"I'm grateful to be a single mom.", status:"Done", date:"2026-02-20", pillar:"Happily Single Mom", views:44695, likes:350, comments:12, er:0.89, link:""},
+  {id:27, title:"Permission to go on a girl's trip to Vietnam", caption:"Today I give myself PERMISSION to go on a girl's trip to Vietnam ✨", status:"Done", date:"2026-02-18", pillar:"Happily Single Mom", views:0, likes:141, comments:10, er:0, link:""},
+  {id:28, title:"Permission to be a happy & fun mom", caption:"Today I give myself PERMISSION to be a happy & fun mom.", status:"Done", date:"2026-02-15", pillar:"Happily Single Mom", views:21013, likes:240, comments:14, er:1.40, link:""},
+  {id:29, title:"Permission to go on a solo trip", caption:"Today I give myself PERMISSION to go on a solo trip to Vietnam.", status:"Done", date:"2026-02-12", pillar:"Happily Single Mom", views:82404, likes:886, comments:47, er:1.30, link:""},
+  {id:30, title:"I'm the only one raising my kids financially and emotionally", caption:"I'm raising my kids financially and emotionally, without breaks.", status:"Done", date:"2026-02-10", pillar:"Vulnerable Single Mom", views:0, likes:332, comments:9, er:0, link:""},
+  {id:31, title:"Things no one talks about when you're a single mom", caption:"Things no one talks about when you're a single mom. Let's get completely honest and unhinged...", status:"Done", date:"2026-02-17", pillar:"Vulnerable Single Mom", views:161000, likes:2638, comments:87, er:0, link:""},
+  {id:32, title:"2023: I got cheated on by my husband", caption:"In 2023, my heart broke into a million pieces and life was never the same again.\n\nSince then, I've done a lot of crying, surviving, and healing. Follow my journey if this resonates with you ❤️‍🩹", status:"Done", date:"2026-03-21", pillar:"Vulnerable Single Mom", views:198000, likes:32766, comments:359, er:2.54, link:""},
+  {id:33, title:"Starting over at 36", caption:"Starting over at 36 — here's what that actually looks like.", status:"Done", date:"2025-12-09", pillar:"Vulnerable Single Mom", views:0, likes:1099, comments:147, er:0, link:""},
+];
+
+// Weekly growth — last 10 weeks, most recent last (for chart left→right)
+const WEEKLY_GROWTH = [
+  {week:"Feb 22–28",    newFollowers:700,  total:14300, topPost:"I'm too scared to get a divorce",                      notes:"Permission + vulnerable mix driving steady growth"},
+  {week:"Mar 1–7",      newFollowers:800,  total:15100, topPost:"Are you in your single mom era?",                      notes:"3 posts; identity hooks resonating strongly"},
+  {week:"Mar 8–14",     newFollowers:1200, total:16300, topPost:"You'd never know — marriage was falling apart 🔥",     notes:"6.9K likes Mar 9 — secret divorce reel cracked open the audience"},
+  {week:"Mar 15–21",    newFollowers:600,  total:16900, topPost:"Things I love deeply about being a single mom",        notes:"Softer content held ground after Mar 8 spike"},
+  {week:"Mar 22–28",    newFollowers:1500, total:18400, topPost:"2023: I got cheated on by my husband 🔥",              notes:"VIRAL — 32.8K likes, 198K views. Biggest growth week ever."},
+  {week:"Mar 29–Apr 5", newFollowers:400,  total:18800, topPost:"When my phone brings up a slideshow of babies",        notes:"Postpartum grief hook; emotional resonance carried the week"},
+  {week:"Apr 6–12",     newFollowers:300,  total:19100, topPost:"Most women will do anything to keep family together",  notes:"662 likes; quieter week but betrayal thread building"},
+  {week:"Apr 13–19",    newFollowers:400,  total:19500, topPost:"Flirting with other women in front of pregnant wife",  notes:"630 likes — 'guys behaving badly' angle gaining traction"},
+  {week:"Apr 20–26",    newFollowers:500,  total:20000, topPost:"Sometimes you just gotta say what a f*ckin loser",     notes:"1.3K likes Apr 26; raw empowerment hook landed well"},
+  {week:"Apr 27–29",    newFollowers:505,  total:20505, topPost:"Healing from Betrayal Trauma",                        notes:"New betrayal trauma arc launching 🔥 — early signals strong"},
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n) {
+  if (!n) return '—';
+  if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
+  if (n >= 1000) return (n/1000).toFixed(n >= 100000 ? 0 : 1)+'K';
+  return n.toLocaleString();
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+}
+function shortDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+}
+function getViewsClass(v) {
+  if (v >= 500000) return 'views-mega';
+  if (v >= 100000) return 'views-high';
+  if (v >= 20000) return 'views-mid';
+  return 'views-low';
+}
+function getTierBadge(v, er) {
+  if (v >= 100000) return `<span class="tier-badge tier-viral">⚡ Viral</span>`;
+  if (v >= 20000 || er >= 3) return `<span class="tier-badge tier-strong">💚 Strong</span>`;
+  if (v >= 5000 || er >= 1.5) return `<span class="tier-badge tier-avg">🔵 Avg</span>`;
+  return `<span class="tier-badge tier-low">Low</span>`;
+}
+function getERBadge(er) {
+  if (!er) return `<span class="er-badge er-low">—</span>`;
+  const cls = er >= 3 ? 'er-hot' : er >= 2 ? 'er-good' : er >= 1 ? 'er-ok' : 'er-low';
+  return `<span class="er-badge ${cls}">${er.toFixed(2)}%</span>`;
+}
+function getStatusTag(s) {
+  if (s === 'Done') return `<span class="modal-tag tag-done">Published</span>`;
+  if (s === 'Editing') return `<span class="modal-tag tag-editing">Editing</span>`;
+  return `<span class="modal-tag tag-draft">Draft</span>`;
 }
 
-// GROWTH CHART
-const weeklyData = [
-  { week: 'Feb 15', gain: 500 },
-  { week: 'Feb 22', gain: 700 },
-  { week: 'Mar 1',  gain: 800 },
-  { week: 'Mar 8',  gain: 1200 },
-  { week: 'Mar 15', gain: 600 },
-  { week: 'Mar 22', gain: 1500 },
-  { week: 'Mar 29', gain: 400 },
-  { week: 'Apr 6',  gain: 300 },
-  { week: 'Apr 13', gain: 400 },
-  { week: 'Apr 20', gain: 500 },
-];
-const max = Math.max(...weeklyData.map(d => d.gain));
-const chart = document.getElementById('growthChart');
-weeklyData.forEach(d => {
-  const pct = Math.max(8, (d.gain / max) * 130);
-  const col = document.createElement('div');
-  col.className = 'bar-col';
-  col.innerHTML = `
-    <div class="bar${d.gain >= 1000 ? ' highlight' : ''}" style="height:${pct}px;">
-      <div class="bar-tooltip">+${d.gain.toLocaleString()} followers</div>
-    </div>
-    <div class="bar-label">${d.week}</div>
-  `;
-  chart.appendChild(col);
-});
+// ============================================================
+// SECTION SWITCHING
+// ============================================================
+function showSection(name, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-'+name).classList.add('active');
+  el.classList.add('active');
+  if (name === 'growth') renderGrowthChart();
+  if (name === 'overview') renderOverviewChart();
+}
 
-// CALENDAR BUILDER
-function buildCal(containerId, year, month, postDates) {
-  const c = document.getElementById(containerId);
-  ['S','M','T','W','T','F','S'].forEach(d => {
-    const h = document.createElement('div');
-    h.className = 'cal-day-header'; h.textContent = d; c.appendChild(h);
-  });
-  const firstDay = new Date(year, month - 1, 1).getDay();
-  const daysInMonth = new Date(year, month, 0).getDate();
+// ============================================================
+// MODAL
+// ============================================================
+function openPost(id) {
+  const p = POSTS.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('modal-title').textContent = p.title;
+  document.getElementById('modal-meta').innerHTML = `
+    ${getStatusTag(p.status)}
+    ${p.date ? `<span class="modal-tag" style="background:var(--cream);color:var(--muted);">📅 ${fmtDate(p.date)}</span>` : ''}
+    ${p.pillar ? `<span class="modal-tag" style="background:var(--cream);color:var(--muted);">${p.pillar}</span>` : ''}
+  `;
+  document.getElementById('modal-caption').textContent = p.caption || '(No caption yet)';
+  document.getElementById('modal-metrics').innerHTML = `
+    <div class="modal-metric"><div class="modal-metric-val">${fmt(p.views)}</div><div class="modal-metric-label">Views</div></div>
+    <div class="modal-metric"><div class="modal-metric-val">${fmt(p.likes)}</div><div class="modal-metric-label">Likes</div></div>
+    <div class="modal-metric"><div class="modal-metric-val">${fmt(p.comments)}</div><div class="modal-metric-label">Comments</div></div>
+    <div class="modal-metric"><div class="modal-metric-val">${p.er ? p.er.toFixed(2)+'%' : '—'}</div><div class="modal-metric-label">Eng. Rate</div></div>
+  `;
+  document.getElementById('modal-link-wrap').innerHTML = p.link
+    ? `<a href="${p.link}" target="_blank" class="modal-link">↗ View on Instagram</a>` : '';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e) { if (e.target === document.getElementById('modal-overlay')) closeModalBtn(); }
+function closeModalBtn() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+// ============================================================
+// CALENDAR
+// ============================================================
+let calYear = 2026, calMonth = 3; // April
+
+function renderCalendar() {
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month-label').textContent = `${months[calMonth]} ${calYear}`;
+  const body = document.getElementById('cal-body');
+  body.innerHTML = '';
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
   const today = new Date();
-  for (let i = 0; i < firstDay; i++) { c.appendChild(document.createElement('div')); }
+
+  for (let i = 0; i < firstDay; i++) {
+    const c = document.createElement('div'); c.className = 'cal-cell empty'; body.appendChild(c);
+  }
   for (let d = 1; d <= daysInMonth; d++) {
     const cell = document.createElement('div');
-    cell.className = 'cal-cell'; cell.textContent = d;
-    if (postDates.includes(d)) {
-      cell.classList.add('has-post');
-      const dot = document.createElement('div'); dot.className = 'dot'; cell.appendChild(dot);
-    }
-    if (year === today.getFullYear() && month === today.getMonth()+1 && d === today.getDate()) {
-      cell.classList.add('today');
-    }
-    c.appendChild(cell);
+    const isToday = today.getFullYear()===calYear && today.getMonth()===calMonth && today.getDate()===d;
+    cell.className = 'cal-cell' + (isToday ? ' today' : '');
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayPosts = POSTS.filter(p => p.date === dateStr);
+    const dateHtml = isToday
+      ? `<div class="cal-date">${d}</div>`
+      : `<div class="cal-date" style="font-size:12px;font-weight:600;color:var(--muted);">${d}</div>`;
+    let chips = '';
+    dayPosts.forEach(p => {
+      chips += `<span class="cal-post-chip ${p.views>=100000?'views-high':''}" onclick="openPost(${p.id})" title="${p.title}">${p.title.length>22?p.title.substring(0,22)+'…':p.title}</span>`;
+    });
+    cell.innerHTML = dateHtml + chips;
+    body.appendChild(cell);
   }
 }
-buildCal('aprilCal', 2026, 4,  [4,6,11,12,15,16,17,18,19,20,25,26,27]);
-buildCal('marchCal', 2026, 3,  [1,4,6,9,14,15,17,21,27,31]);
-buildCal('febCal',   2026, 2,  [10,12,15,17,18,20,23,25,26]);
+function changeMonth(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+
+// ============================================================
+// GROWTH TABLE — Notes column (replaces Views)
+// ============================================================
+function renderGrowthTable() {
+  const maxFollowers = Math.max(...WEEKLY_GROWTH.map(w => w.newFollowers));
+  const tbody = document.getElementById('growth-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = WEEKLY_GROWTH.slice().reverse().map(w => {
+    const pct = Math.round((w.newFollowers / maxFollowers) * 100);
+    const isHot = w.newFollowers >= 1000;
+    return `
+      <tr>
+        <td style="font-family:'DM Mono',monospace;font-size:12px;white-space:nowrap;">${w.week}</td>
+        <td class="num-cell" style="color:${isHot?'var(--rose)':'var(--charcoal)'};">+${w.newFollowers.toLocaleString()}</td>
+        <td class="weekly-bar-cell">
+          <div class="weekly-bar-bg"><div class="weekly-bar-fill" style="width:${pct}%"></div></div>
+        </td>
+        <td class="num-cell">${w.total.toLocaleString()}</td>
+        <td style="font-size:12px;max-width:200px;">${w.topPost}</td>
+        <td style="font-size:11px;color:var(--muted);font-style:italic;max-width:280px;">${w.notes}</td>
+      </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// TOP PERFORMERS TABLE
+// ============================================================
+let currentFilter = 'all';
+let currentSort = {col:'views', dir:-1};
+
+function filterPosts(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPerfTable();
+}
+function sortTable(col) {
+  if (currentSort.col === col) currentSort.dir *= -1;
+  else { currentSort.col = col; currentSort.dir = -1; }
+  ['views','likes','comments','er'].forEach(c => {
+    const el = document.getElementById('sort-'+c);
+    if (el) { el.textContent = '↕'; el.classList.remove('active'); }
+  });
+  const el = document.getElementById('sort-'+col);
+  if (el) { el.textContent = currentSort.dir === -1 ? '↓' : '↑'; el.classList.add('active'); }
+  renderPerfTable();
+}
+function renderPerfTable() {
+  let posts = POSTS.filter(p => p.status === 'Done');
+  if (currentFilter === 'viral')  posts = posts.filter(p => p.views >= 100000);
+  else if (currentFilter === 'strong') posts = posts.filter(p => p.views >= 20000);
+  else if (currentFilter === 'er') posts = posts.filter(p => p.er >= 3);
+
+  const col = currentSort.col, dir = currentSort.dir;
+  posts.sort((a,b) => {
+    const av = col==='title'?a.title:col==='views'?a.views:col==='likes'?a.likes:col==='comments'?a.comments:col==='er'?a.er:a.views;
+    const bv = col==='title'?b.title:col==='views'?b.views:col==='likes'?b.likes:col==='comments'?b.comments:col==='er'?b.er:b.views;
+    return typeof av==='string' ? dir*av.localeCompare(bv) : dir*(bv-av);
+  });
+
+  document.getElementById('perf-table-body').innerHTML = posts.map((p,i) => `
+    <tr onclick="openPost(${p.id})">
+      <td><span class="rank-num ${i<3?'top3':''}">${i+1}</span></td>
+      <td class="post-name-cell">
+        <div class="post-name">${p.title}</div>
+        <div class="post-date-small">${p.date?fmtDate(p.date):'—'}</div>
+      </td>
+      <td class="num-cell" style="color:${p.views>=100000?'var(--rose)':'var(--charcoal)'};">${fmt(p.views)}</td>
+      <td class="num-cell">${fmt(p.likes)}</td>
+      <td class="num-cell">${fmt(p.comments)}</td>
+      <td style="text-align:right;">${getERBadge(p.er)}</td>
+      <td>${getTierBadge(p.views,p.er)}</td>
+      <td style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap;">${p.date?shortDate(p.date):'—'}</td>
+    </tr>`).join('');
+}
+
+// ============================================================
+// OVERVIEW MINI CONTENT
+// ============================================================
+function renderOverviewMini() {
+  const top5 = [...POSTS].filter(p=>p.status==='Done').sort((a,b)=>b.likes-a.likes).slice(0,5);
+  document.getElementById('mini-top-posts').innerHTML = top5.map((p,i) => `
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid var(--border);cursor:pointer;" onclick="openPost(${p.id})">
+      <div style="font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:${i===0?'var(--gold)':'var(--muted)'};width:20px;flex-shrink:0;">${i+1}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title}</div>
+        <div style="font-size:10px;color:var(--muted);">${shortDate(p.date)}</div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--rose);flex-shrink:0;">${fmt(p.likes)}</div>
+    </div>`).join('');
+
+  document.getElementById('insights-content').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;justify-content:space-between;padding:12px;background:var(--rose-pale);border-radius:8px;">
+        <div style="font-size:12px;color:var(--rose);font-weight:500;">Accounts reached (90d)</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--rose);">1.14M</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:12px;background:var(--sage-light);border-radius:8px;">
+        <div style="font-size:12px;color:var(--sage);font-weight:500;">Profile visits (90d)</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--sage);">124K</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:12px;background:var(--amber-light);border-radius:8px;">
+        <div style="font-size:12px;color:var(--amber);font-weight:500;">Posts with 100K+ views</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--amber);">${POSTS.filter(p=>p.views>=100000).length}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:12px;background:var(--lav-light);border-radius:8px;">
+        <div style="font-size:12px;color:var(--lavender);font-weight:500;">Posts with 3%+ ER</div>
+        <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--lavender);">${POSTS.filter(p=>p.er>=3).length}</div>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// CHARTS (Canvas)
+// ============================================================
+function drawBarChart(canvasId, labels, data, color) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 800, H = canvas.offsetHeight || 200;
+  canvas.width = W; canvas.height = H;
+  ctx.clearRect(0,0,W,H);
+  const padL=40, padR=20, padT=20, padB=40;
+  const chartW=W-padL-padR, chartH=H-padT-padB;
+  const max = Math.max(...data)*1.1||1;
+  const barW = Math.floor(chartW/data.length*0.65);
+  const gap = chartW/data.length;
+
+  ctx.strokeStyle='#E7E0D8'; ctx.lineWidth=1;
+  [0.25,0.5,0.75,1].forEach(frac=>{
+    const y=padT+chartH*(1-frac);
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(W-padR,y); ctx.stroke();
+    ctx.fillStyle='#A8A29E'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='right';
+    const val=max*frac;
+    ctx.fillText(val>=1000?Math.round(val/1000)+'k':Math.round(val),padL-4,y+3);
+  });
+
+  data.forEach((val,i)=>{
+    const barH=(val/max)*chartH, x=padL+gap*i+(gap-barW)/2, y=padT+chartH-barH;
+    const grad=ctx.createLinearGradient(0,y,0,y+barH);
+    grad.addColorStop(0,color||'#D4627A'); grad.addColorStop(1,(color||'#D4627A')+'60');
+    ctx.fillStyle=grad; ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(x,y,barW,barH,[3,3,0,0]); else ctx.rect(x,y,barW,barH);
+    ctx.fill();
+    if(labels[i]){
+      ctx.fillStyle='#A8A29E'; ctx.font='9px DM Sans,sans-serif'; ctx.textAlign='center';
+      ctx.fillText(labels[i].length>8?labels[i].substring(0,8):labels[i],x+barW/2,H-padB+14);
+    }
+  });
+}
+
+function renderOverviewChart() {
+  setTimeout(()=>{
+    drawBarChart('overview-chart',
+      WEEKLY_GROWTH.map(w=>w.week.split('–')[0]),
+      WEEKLY_GROWTH.map(w=>w.newFollowers),
+      '#D4627A');
+  },50);
+}
+
+function renderGrowthChart() {
+  setTimeout(()=>{
+    const canvas=document.getElementById('growth-chart');
+    if(!canvas) return;
+    const ctx=canvas.getContext('2d');
+    const W=canvas.offsetWidth||900, H=240;
+    canvas.width=W; canvas.height=H;
+    ctx.clearRect(0,0,W,H);
+    const padL=50, padR=20, padT=20, padB=50;
+    const chartW=W-padL-padR, chartH=H-padT-padB;
+    const data=WEEKLY_GROWTH;
+    const maxBar=Math.max(...data.map(w=>w.newFollowers))*1.1;
+    const maxLine=Math.max(...data.map(w=>w.total));
+    const barW=Math.floor(chartW/data.length*0.5);
+    const gap=chartW/data.length;
+
+    ctx.strokeStyle='#E7E0D8'; ctx.lineWidth=1;
+    [0.25,0.5,0.75,1].forEach(frac=>{
+      const y=padT+chartH*(1-frac);
+      ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(W-padR,y); ctx.stroke();
+      ctx.fillStyle='#A8A29E'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='right';
+      ctx.fillText(Math.round(maxBar*frac/100)*100,padL-4,y+3);
+    });
+
+    data.forEach((w,i)=>{
+      const barH=(w.newFollowers/maxBar)*chartH, x=padL+gap*i+(gap-barW)/2, y=padT+chartH-barH;
+      const grad=ctx.createLinearGradient(0,y,0,y+barH);
+      grad.addColorStop(0,'#D4627A'); grad.addColorStop(1,'#D4627A40');
+      ctx.fillStyle=grad; ctx.beginPath();
+      if(ctx.roundRect) ctx.roundRect(x,y,barW,barH,[3,3,0,0]); else ctx.rect(x,y,barW,barH);
+      ctx.fill();
+    });
+
+    ctx.strokeStyle='#BB7AA8'; ctx.lineWidth=2; ctx.setLineDash([5,3]);
+    ctx.beginPath();
+    data.forEach((w,i)=>{
+      const x=padL+gap*i+gap/2, y=padT+chartH-(w.total/maxLine)*chartH;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.stroke(); ctx.setLineDash([]);
+
+    data.forEach((w,i)=>{
+      const x=padL+gap*i+gap/2, y=padT+chartH-(w.total/maxLine)*chartH;
+      ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fillStyle='#BB7AA8'; ctx.fill();
+    });
+
+    data.forEach((w,i)=>{
+      const x=padL+gap*i+gap/2;
+      ctx.fillStyle='#A8A29E'; ctx.font='9px DM Sans,sans-serif'; ctx.textAlign='center';
+      ctx.fillText(w.week.split('–')[0],x,H-padB+18);
+    });
+
+    renderGrowthTable();
+  },50);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderCalendar();
+  renderPerfTable();
+  renderOverviewMini();
+  renderOverviewChart();
+});
 </script>
 </body>
 </html>
